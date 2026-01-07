@@ -12,9 +12,9 @@ spring:
       mode: always
       platform: mysql
   datasource:
-    url: jdbc:mysql://${RDS_ENDPOINT:localhost}:3306/daniel?useSSL=false&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
-    username: ${RDS_USERNAME:daniel_user}
-    password: ${RDS_PASSWORD}
+    url: jdbc:mysql://${MYSQLHOST:localhost}:${MYSQLPORT}/${MYSQL_DATABASE}?useSSL=false&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
+    username: ${MYSQLUSER:daniel_user}
+    password: ${MYSQLPASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       maximum-pool-size: 10 # 50인 규모이므로 32까지는 필요 없으며 10 정도로도 충분합니다.
