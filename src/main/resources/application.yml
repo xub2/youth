@@ -10,7 +10,7 @@ spring:
       mode: always
       platform: mysql
   datasource:
-    url: jdbc:mysql://${MYSQLHOST:localhost}:${MYSQLPORT:3306}/${MYSQLDATABASE:daniel}?useSSL=false&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
+    url: jdbc:mysql://${MYSQLHOST:localhost}:${MYSQLPORT:3306}/${MYSQL_DATABASE:daniel}?useSSL=false&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
     username: ${MYSQLUSER:daniel_user}
     password: ${MYSQLPASSWORD:daniel1234}
     driver-class-name: com.mysql.cj.jdbc.Driver
