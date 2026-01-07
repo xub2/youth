@@ -1,8 +1,6 @@
 spring:
   application:
     name: group-random
-  profiles:
-    active: local
   mvc:
     static-path-pattern: /ui/**
   messages:
