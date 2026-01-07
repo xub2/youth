@@ -29,7 +29,7 @@ public class GroupAssignmentController {
     public String assignGroups(RedirectAttributes redirectAttributes) {
         try {
             groupAssignmentService.assignGroups();
-            redirectAttributes.addFlashAttribute("message", "정상 등록 되었습니다.");
+            redirectAttributes.addFlashAttribute("message", "정상적으로 목장이 편성 되었습니다.");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "배정 중 오류가 발생했습니다: " + e.getMessage());
         }
