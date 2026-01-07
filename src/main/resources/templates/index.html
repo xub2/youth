@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DANIEL 목장 관리</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .btn-xl { padding: 1.2rem 1rem; font-size: 1.1rem; }
+        .form-check-input { width: 1.5em; height: 1.5em; }
+        .member-list-container { max-height: 400px; overflow-y: auto; border-radius: 10px; }
+        .is-hard-badge { background-color: #ffc107; color: #000; font-size: 0.75rem; }
+        .role-badge { font-size: 0.7rem; padding: 0.3em 0.5em; }
+        .card { border-radius: 12px; border: none; }
+        .shadow-xs { box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); }
+    </style>
+</head>
+<body class="bg-light">
+<div class="container py-4">
+    <h2 class="text-center mb-4 fw-bold text-primary">다니엘 청년부 랜덤 목장</h2>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body p-4">
+            <form th:action="@{/member/add}" method="post">
+                <div class="row g-3 align-items-end">
+                    <div class="col-8 col-md-9">
+                        <label class="form-label fw-bold">이름</label>
+                        <input type="text" name="name" class="form-control form-control-lg" placeholder="이름 입력" required>
+                    </div>
+                    <div class="col-4 col-md-3">
+                        <button type="submit" class="btn btn-success btn-lg w-100 fw-bold">등록</button>
+                    </div>
+                    <div class="col-12 mt-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" name="isHard" id="isHard">
+                            <label class="form-check-label ms-2 fw-bold" for="isHard">리더 불가시 체크</label>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h5 class="mb-0 fw-bold text-dark">출석 명단 (<span th:text="${membersCount}">0</span>)</h5>
+                <form th:action="@{/member/clear}" method="post" onsubmit="return confirm('전체 명단을 삭제하시겠습니까?')">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">초기화</button>
+                </form>
+            </div>
+
+            <div class="card shadow-sm member-list-container mb-3">
+                <ul class="list-group list-group-flush">
+                    <li th:each="member : ${members}" class="list-group-item d-flex justify-content-between align-items-center py-3">
+                        <div>
+                            <span th:text="${member.name}" class="fw-bold">이름</span>
+                            <span th:if="${member.isHard}" class="badge is-hard-badge ms-1">리더 X</span>
+                        </div>
+                        <form th:action="@{/member/delete/{id}(id=${member.id})}" method="post">
+                            <button type="submit" class="btn-close" style="font-size: 0.75rem;"></button>
+                        </form>
+                    </li>
+                    <li th:if="${membersCount == 0}" class="list-group-item text-center text-muted py-5">
+                        등록된 인원이 없습니다.
+                    </li>
+                </ul>
+            </div>
+
+            <div class="row g-2">
+                <div class="col-6">
+                    <form th:action="@{/assign}" method="post">
+                        <button type="submit" class="btn btn-primary btn-xl w-100 fw-bold shadow"
+                                onclick="return confirm('랜덤 배정을 실행하시겠습니까?')">랜덤 목장 생성</button>
+                    </form>
+                </div>
+                <div class="col-6">
+                    <a th:href="@{/assign/result}" class="btn btn-outline-secondary btn-xl w-100 fw-bold shadow-sm">결과 보기</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div th:if="${teams != null and !teams.isEmpty()}">
+                <h5 class="mb-3 fw-bold border-start border-4 border-primary ps-2 text-dark">목장 배정 결과</h5>
+                <div class="row row-cols-1 row-cols-md-2 g-3">
+                    <div class="col" th:each="team : ${teams}">
+                        <div class="card shadow-sm h-100 border-top border-4 border-dark">
+                            <div class="card-header bg-white d-flex justify-content-between align-items-center py-2">
+                                <span class="fw-bold fs-5 text-primary" th:text="${team.teamName} + ' 목장'">D</span>
+                                <span class="badge bg-light text-dark" th:text="${team.members.size()} + '명'">0</span>
+                            </div>
+                            <div class="card-body p-2 bg-light">
+                                <div class="row row-cols-2 g-1">
+                                    <div th:each="m : ${team.members}" class="col">
+                                        <div class="bg-white border rounded p-2 h-100 shadow-xs d-flex justify-content-between align-items-center">
+                                            <span th:text="${m.name}" class="fw-bold text-truncate" style="font-size: 0.85rem; max-width: 60%;">이름</span>
+                                            <div class="d-flex gap-1">
+                                                <span th:if="${m.role.name() == 'MC'}" class="badge bg-danger role-badge">일일 리더</span>
+                                                <span th:if="${m.role.name() == 'HELPER'}" class="badge bg-success role-badge">일일 헬퍼</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div th:unless="${teams != null and !teams.isEmpty()}"
+                 class="h-100 d-flex align-items-center justify-content-center border rounded-4 bg-white"
+                 style="min-height: 300px; border-style: dashed !important;">
+                <div class="text-center text-muted">
+                    <p class="mb-0 fs-5">인원 등록 후 <br><strong>[랜덤 뽑기]</strong>를 눌러주세요.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var message = /*[[${message}]]*/ null;
+    if (message) alert(message);
+
+    var error = /*[[${error}]]*/ null;
+    if (error) alert(error);
+    /*]]>*/
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
