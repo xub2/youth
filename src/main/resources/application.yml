@@ -20,7 +20,6 @@ spring:
       maximum-pool-size: 10 # 50인 규모이므로 32까지는 필요 없으며 10 정도로도 충분합니다.
   jpa:
     database: mysql
-    database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
       ddl-auto: create
     properties:
