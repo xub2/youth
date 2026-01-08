@@ -59,7 +59,7 @@ public class MemberController {
 
         memberRepository.save(member);
         redirectAttributes.addFlashAttribute("message", name + " 님이 등록되었습니다.");
-        return "redirect:/";
+        return "redirect:/member/list/admin";
     }
 
     /**

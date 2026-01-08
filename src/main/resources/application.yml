@@ -1,8 +1,8 @@
 spring:
   application:
     name: group-random
-  mvc:
-    static-path-pattern: /ui/**
+#  mvc:
+#    static-path-pattern: /static/**
   messages:
     basename: errors
   sql:

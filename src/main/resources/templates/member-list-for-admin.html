@@ -19,6 +19,29 @@
         <a th:href="@{/}" class="btn btn-outline-primary shadow-sm">메인으로 돌아가기</a>
     </div>
 
+    <div class="card shadow-sm mb-4 border-0" style="border-color: black !important;">
+        <div class="card-header bg-white fw-bold">출석 인원 등록</div>
+        <div class="card-body p-4">
+            <form th:action="@{/member/add}" method="post">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">이름</label>
+                        <input type="text" name="name" class="form-control" placeholder="이름 입력" required>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-check form-switch mb-2">
+                            <input class="form-check-input" type="checkbox" name="isHard" id="isHardAdmin">
+                            <label class="form-check-label ms-2 fw-bold" for="isHardAdmin">리더 불가시 체크 바랍니다</label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-success w-100 fw-bold">등록하기</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div class="row g-3 mb-4">
         <div class="col-6 col-md-4">
             <div class="card summary-card border-primary shadow-sm">
@@ -55,7 +78,7 @@
                 <tr>
                     <th class="ps-4">이름</th>
                     <th>리더 가능 여부</th>
-                    <th class="text-center">작업</th>
+                    <th class="text-center">삭제</th>
                 </tr>
                 </thead>
                 <tbody>
