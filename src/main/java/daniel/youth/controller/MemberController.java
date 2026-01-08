@@ -34,6 +34,15 @@ public class MemberController {
         return "index";
     }
 
+    @GetMapping("/member/list/admin")
+    public String memberListForAdmin(Model model) {
+        List<Member> members = memberRepository.findAll();
+        model.addAttribute("members", members);
+
+        return "member-list-for-admin";
+    }
+
+
     /**
      * 명단 한 명씩 추가
      */
@@ -64,6 +73,14 @@ public class MemberController {
             redirectAttributes.addFlashAttribute("message", name + " 님이 삭제되었습니다.");
         });
         return "redirect:/";
+    }
+
+    // 관리자 페이지 전용 삭제 로직
+    @PostMapping("/member/admin/delete/{id}")
+    public String deleteMemberFromAdmin(@PathVariable Long id) {
+        memberRepository.deleteById(id);
+        // 삭제 후 다시 관리자 명단 페이지로 리다이렉트
+        return "redirect:/member/list/admin";
     }
 
     /**
