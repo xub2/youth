@@ -2,9 +2,9 @@ package daniel.youth.controller;
 
 import daniel.youth.domain.Member;
 import daniel.youth.domain.Team;
-import daniel.youth.repository.MemberRepository;
-import daniel.youth.repository.TeamRepository;
 import daniel.youth.service.GroupAssignmentService;
+import daniel.youth.service.MemberService;
+import daniel.youth.service.TeamService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,8 +19,8 @@ import java.util.List;
 public class GroupAssignmentController {
 
     private final GroupAssignmentService groupAssignmentService;
-    private final TeamRepository teamRepository;
-    private final MemberRepository memberRepository;
+    private final TeamService teamService;
+    private final MemberService memberService;
 
     /**
      * 랜덤 목장 배정 실행
@@ -38,8 +38,8 @@ public class GroupAssignmentController {
 
     @GetMapping("/assign/result")
     public String getAssignmentResult(Model model) {
-        List<Team> teams = teamRepository.findAll();
-        List<Member> members = memberRepository.findAll(); // 전체 명단 다시 가져오기
+        List<Team> teams = teamService.findAll();
+        List<Member> members = memberService.findAll(); // 전체 명단 다시 가져오기
 
         model.addAttribute("teams", teams);
         model.addAttribute("members", members); // 뷰에 명단 전달
