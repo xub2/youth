@@ -5,12 +5,18 @@ import daniel.youth.domain.MemberRole;
 import daniel.youth.domain.Team;
 import daniel.youth.repository.MemberRepository;
 import daniel.youth.repository.TeamRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -91,5 +97,46 @@ public class MemberController {
         memberRepository.deleteAll();
         redirectAttributes.addFlashAttribute("message", "모든 명단이 초기화되었습니다.");
         return "redirect:/";
+    }
+
+    // 다운로드 ?
+    @GetMapping("member/export")
+    public void exportToCSV(HttpServletResponse response) throws IOException {
+        // 1. 파일명 설정 (날짜 포맷 정렬)
+        String dateStr = java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd").format(LocalDateTime.now());
+        String fileName = URLEncoder.encode(dateStr + "_출석명단.csv", StandardCharsets.UTF_8);
+
+        List<Member> members = memberRepository.findAll();
+
+        // 2. 응답 설정 (UTF-8 명시)
+        response.setContentType("text/csv; charset=UTF-8");
+        response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+
+
+        // 3. 한글 깨짐 및 칸 밀림 방지를 위해 BufferedWriter와OutputStreamWriter 사용
+        // OutputStream에 BOM(\ufeff)을 먼저 쓰고 시작합니다.
+        response.getOutputStream().write(0xEF);
+        response.getOutputStream().write(0xBB);
+        response.getOutputStream().write(0xBF);
+
+        PrintWriter writer = new PrintWriter(new java.io.OutputStreamWriter(response.getOutputStream(), StandardCharsets.UTF_8));
+
+        // 4. 헤더 작성
+        // (A열은 비우고 B열 1행에 '이름' 배치)
+        // CSV에서 빈 칸은 쉼표(,)로 구분합니다.
+        writer.println("번호, 이름");
+
+        // 5. 데이터 작성
+        int index = 1;
+        for (Member m : members) {
+            // 혹시 이름에 쉼표가 들어있을 경우를 대비해 큰따옴표로 감쌉니다.
+            writer.println(String.format("%d,%s", index++, m.getName()));
+        }
+
+        writer.println(); // 한 줄 띄우기
+        writer.println(String.format("총 인원,%d명", members.size()));
+
+        writer.flush();
+        writer.close();
     }
 }

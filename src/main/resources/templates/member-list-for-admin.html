@@ -16,7 +16,12 @@
 <div class="container py-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold text-dark">관리자용 출석 명단</h2>
-        <a th:href="@{/}" class="btn btn-outline-primary shadow-sm">메인으로 돌아가기</a>
+        <div>
+            <a th:href="@{/member/export}" class="btn btn-success shadow-sm fw-bold">
+                <i class="bi bi-file-earmark-excel"></i> 명단 엑셀 다운로드
+            </a>
+            <a th:href="@{/}" class="btn btn-outline-primary shadow-sm">메인으로 돌아가기</a>
+        </div>
     </div>
 
     <div class="card shadow-sm mb-4 border-0" style="border-color: black !important;">
