@@ -3,8 +3,8 @@ package daniel.youth.controller;
 import daniel.youth.domain.Member;
 import daniel.youth.domain.MemberRole;
 import daniel.youth.domain.Team;
-import daniel.youth.repository.MemberRepository;
-import daniel.youth.repository.TeamRepository;
+import daniel.youth.service.MemberService;
+import daniel.youth.service.TeamService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -23,16 +23,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MemberController {
 
-    private final MemberRepository memberRepository;
-    private final TeamRepository teamRepository;
+    private final MemberService memberService;
+    private final TeamService teamService;
 
     /**
      * 메인 화면: 출석 명단 리스트 + 등록 폼
      */
     @GetMapping("/")
     public String index(Model model) {
-        List<Member> members = memberRepository.findAll();
-        List<Team> teams = teamRepository.findAll(); // 배정 결과가 있다면 보여주기 위해 추가
+        List<Member> members = memberService.findAll();
+        List<Team> teams = teamService.findAll(); // 배정 결과가 있다면 보여주기 위해 추가
 
         model.addAttribute("members", members);
         model.addAttribute("membersCount", members.size());
@@ -42,7 +42,7 @@ public class MemberController {
 
     @GetMapping("/member/list/admin")
     public String memberListForAdmin(Model model) {
-        List<Member> members = memberRepository.findAll();
+        List<Member> members = memberService.findAll();
         model.addAttribute("members", members);
 
         return "member-list-for-admin";
@@ -63,7 +63,7 @@ public class MemberController {
                 .role(MemberRole.NORMAL)
                 .build();
 
-        memberRepository.save(member);
+        memberService.save(member);
         redirectAttributes.addFlashAttribute("message", name + " 님이 등록되었습니다.");
         return "redirect:/member/list/admin";
     }
@@ -73,9 +73,9 @@ public class MemberController {
      */
     @PostMapping("/member/delete/{id}")
     public String deleteMember(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        memberRepository.findById(id).ifPresent(member -> {
+        memberService.findById(id).ifPresent(member -> {
             String name = member.getName();
-            memberRepository.delete(member);
+            memberService.delete(member);
             redirectAttributes.addFlashAttribute("message", name + " 님이 삭제되었습니다.");
         });
         return "redirect:/";
@@ -84,7 +84,7 @@ public class MemberController {
     // 관리자 페이지 전용 삭제 로직
     @PostMapping("/member/admin/delete/{id}")
     public String deleteMemberFromAdmin(@PathVariable Long id) {
-        memberRepository.deleteById(id);
+        memberService.deleteById(id);
         // 삭제 후 다시 관리자 명단 페이지로 리다이렉트
         return "redirect:/member/list/admin";
     }
@@ -94,7 +94,7 @@ public class MemberController {
      */
     @PostMapping("/member/clear")
     public String clearMembers(RedirectAttributes redirectAttributes) {
-        memberRepository.deleteAll();
+        memberService.deleteAll();
         redirectAttributes.addFlashAttribute("message", "모든 명단이 초기화되었습니다.");
         return "redirect:/";
     }
@@ -106,7 +106,7 @@ public class MemberController {
         String dateStr = java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd").format(LocalDateTime.now());
         String fileName = URLEncoder.encode(dateStr + "_출석명단.csv", StandardCharsets.UTF_8);
 
-        List<Member> members = memberRepository.findAll();
+        List<Member> members = memberService.findAll();
 
         // 2. 응답 설정 (UTF-8 명시)
         response.setContentType("text/csv; charset=UTF-8");
