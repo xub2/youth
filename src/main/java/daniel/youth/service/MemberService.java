@@ -22,6 +22,12 @@ public class MemberService {
 
     @Transactional
     public void save(Member member) {
+        Optional<Member> existingMember = memberRepository.findByNameWithLock(member.getName());
+
+        if (existingMember.isPresent()) {
+            throw new IllegalStateException(member.getName() + " 은(는) 이미 존재하는 이름입니다. " + member.getName() + "A 와 같이 입력해주세요.");
+        }
+
         memberRepository.save(member);
     }
 
@@ -44,9 +50,23 @@ public class MemberService {
         memberRepository.deleteAll();
     }
 
+    // 벌크연산 주의
+    @Transactional
+    public void clear() {
+        memberRepository.clearAll();
+    }
+
     public List<Member> findAllByNameAsc() {
         return memberRepository.findAllByOrderByNameAsc();
     }
 
+    // 팀에 소속된 멤버들 지우기 -> 즉 모든 멤버의 팀을 null 로 만들기
+    @Transactional
+    public void unassignAllMembers() {
+        memberRepository.clearAllMemberTeams();
+    }
 
+    public boolean existsByName(String name) {
+        return memberRepository.existsByName(name);
+    }
 }

@@ -16,7 +16,7 @@
 <body class="bg-light">
 <div class="container py-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold text-dark">관리자용 출석 명단</h2>
+        <h2 class="fw-bold text-dark">안내팀용 출석 명단</h2>
         <div>
             <a th:href="@{/member/export}" class="btn btn-success shadow-sm fw-bold">
                 <i class="bi bi-file-earmark-excel"></i> 명단 엑셀 다운로드
@@ -42,6 +42,11 @@
                     </div>
                     <div class="col-md-3">
                         <button type="submit" class="btn btn-success w-100 fw-bold">등록하기</button>
+                    </div>
+                    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <span th:text="${error}">에러 메시지</span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 </div>
             </form>
@@ -82,14 +87,16 @@
             <table class="table table-hover mb-0">
                 <thead class="table-dark">
                 <tr>
-                    <th class="ps-4">이름</th>
+                    <th class="ps-4">번호</th> <th>이름</th>
                     <th>리더 가능 여부</th>
                     <th class="text-center">삭제</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="member : ${members}">
-                    <td class="ps-4">
+                <tr th:each="member, stat : ${members}">
+                    <td class="ps-4 text-muted">
+                        <span th:text="${stat.count}">1</span> </td>
+                    <td>
                         <span th:text="${member.name}" class="fw-bold fs-5">이름</span>
                     </td>
                     <td>
@@ -98,16 +105,33 @@
                     </td>
                     <td class="text-center">
                         <form th:action="@{/member/admin/delete/{id}(id=${member.id})}" method="post"
-                              onsubmit="return confirm('정말 삭제하시겠습니까?')">
-                            <button type="submit" class="btn btn-sm btn-outline-danger">삭제</button>
+                              th:onsubmit="return confirm('정말 ' + [[${member.name}]] + '님을 삭제하시겠습니까?');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger px-3 fw-bold">
+                                <i class="bi bi-trash3"></i> 삭제
+                            </button>
                         </form>
                     </td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(members)}">
-                    <td colspan="3" class="text-center py-5 text-muted">등록된 인원이 없습니다.</td>
+                    <td colspan="4" class="text-center py-5 text-muted">등록된 인원이 없습니다.</td>
                 </tr>
                 </tbody>
             </table>
+        </div>
+    </div>
+
+    <div class="mt-5 p-4 bg-white rounded shadow-sm border border-danger-subtle">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h5 class="text-danger fw-bold mb-1"><i class="bi bi-exclamation-octagon-fill"></i> 전체 인원 삭제 주의</h5>
+                <p class="text-muted small mb-0">매주 새로운 출석을 시작하기 위해 현재 등록된 모든 인원을 삭제합니다.</p>
+            </div>
+            <form th:action="@{/member/clear}" method="post"
+                  onsubmit="return confirm('주의! 모든 출석 명단이 영구히 삭제됩니다. 정말 진행하시겠습니까?')">
+                <button type="submit" class="btn btn-danger btn-lg fw-bold px-4">
+                    <i class="bi bi-trash-fill"></i> 출석 인원 전체 삭제
+                </button>
+            </form>
         </div>
     </div>
 
@@ -115,5 +139,15 @@
         <small>* 이 페이지는 관리자 확인용입니다. 메인 화면에서는 리더 불가 정보가 노출되지 않습니다.</small>
     </div>
 </div>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var message = /*[[${message}]]*/ null;
+    if (message) alert(message);
+
+    var error = /*[[${error}]]*/ null;
+    if (error) alert(error);
+    /*]]>*/
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

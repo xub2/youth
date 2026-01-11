@@ -42,7 +42,7 @@ public class MemberController {
 
     @GetMapping("/member/list/admin")
     public String memberListForAdmin(Model model) {
-        List<Member> members = memberService.findAll();
+        List<Member> members = memberService.findAllByNameAsc();
         model.addAttribute("members", members);
 
         return "member-list-for-admin";
@@ -51,20 +51,26 @@ public class MemberController {
 
     /**
      * 명단 한 명씩 추가
+     * 동명이인 로직 개선 1/11
      */
     @PostMapping("/member/add")
     public String addMember(@RequestParam String name,
                             @RequestParam(defaultValue = "false") boolean isHard,
                             RedirectAttributes redirectAttributes) {
 
-        Member member = Member.builder()
-                .name(name)
-                .isHard(isHard)
-                .role(MemberRole.NORMAL)
-                .build();
+        try {
+            Member member = Member.builder()
+                    .name(name)
+                    .isHard(isHard)
+                    .role(MemberRole.NORMAL)
+                    .build();
 
-        memberService.save(member);
-        redirectAttributes.addFlashAttribute("message", name + " 님이 등록되었습니다.");
+            memberService.save(member);
+            redirectAttributes.addFlashAttribute("message", name + " 님이 등록되었습니다.");
+        } catch (IllegalStateException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+
         return "redirect:/member/list/admin";
     }
 
@@ -94,14 +100,28 @@ public class MemberController {
      */
     @PostMapping("/member/clear")
     public String clearMembers(RedirectAttributes redirectAttributes) {
-        memberService.deleteAll();
+//        memberService.deleteAll(); // 여기서 N+1 문제 발생했었음
+        memberService.clear();
         redirectAttributes.addFlashAttribute("message", "모든 명단이 초기화되었습니다.");
+        return "redirect:/member/list/admin";
+    }
+
+    @PostMapping("/member/unassign")
+    public String unassignMember(RedirectAttributes redirectAttributes) {
+        try {
+            memberService.unassignAllMembers();
+            redirectAttributes.addFlashAttribute("message", "목장 배정 결과가 초기화되었습니다.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "초기화 중 오류가 발생했습니다.");
+        }
+
         return "redirect:/";
     }
 
-    // 다운로드 ?
+    // 다운로드 -> 따로 클래스를 빼보는걸로
     @GetMapping("member/export")
     public void exportToCSV(HttpServletResponse response) throws IOException {
+
         // 1. 파일명 설정 (날짜 포맷 정렬)
         String dateStr = java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd").format(LocalDateTime.now());
         String fileName = URLEncoder.encode(dateStr + "_출석명단.csv", StandardCharsets.UTF_8);
