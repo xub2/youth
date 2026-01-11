@@ -106,7 +106,8 @@ public class MemberController {
         String dateStr = java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd").format(LocalDateTime.now());
         String fileName = URLEncoder.encode(dateStr + "_출석명단.csv", StandardCharsets.UTF_8);
 
-        List<Member> members = memberService.findAll();
+//        List<Member> members = memberService.findAll();
+        List<Member> members = memberService.findAllByNameAsc();
 
         // 2. 응답 설정 (UTF-8 명시)
         response.setContentType("text/csv; charset=UTF-8");
