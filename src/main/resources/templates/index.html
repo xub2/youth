@@ -27,7 +27,7 @@
 
     <div class="row">
         <div class="col-12">
-            <div th:if="${teams != null and !teams.isEmpty()}">
+            <div th:if="${teams != null and !teams.isEmpty()}" class="mb-5">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h4 class="fw-bold border-start border-5 border-primary ps-3 text-dark mb-0">목장 배정 결과</h4>
                     <span class="text-muted small">총 <span th:text="${membersCount}">0</span>명 편성</span>
@@ -63,48 +63,67 @@
                  style="min-height: 400px; border-style: dashed !important; border-width: 2px !important;">
                 <div class="text-center text-muted p-5">
                     <i class="bi bi-people-fill" style="font-size: 4rem; opacity: 0.2;"></i>
-                    <p class="mt-3 fs-4">현재 명단이 등록되었습니다.<br>아래 <strong>[랜덤 목장 생성]</strong> 버튼을 눌러주세요.</p>
+                    <p class="mt-3 fs-4">다니엘 청년부 랜덤 목장 시스템입니다.<br>아래 <strong>[랜덤 목장 생성]</strong> 버튼을 눌러주세요.</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row mt-5 pt-5 border-top g-4">
-        <div class="col-lg-8">
-            <h5 class="fw-bold text-dark mb-3"><i class="bi bi-card-checklist me-2"></i>오늘의 출석 명단 (<span th:text="${membersCount}">0</span>)</h5>
-            <div class="p-4 bg-white rounded-4 border shadow-sm">
-                <div class="d-flex flex-wrap gap-2">
-                    <div th:each="member : ${members}" class="member-tag shadow-xs">
-                        <span th:text="${member.name}">이름</span>
+    <div class="row g-4 mb-4">
+        <div class="col-md-5">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body p-4 d-flex flex-column justify-content-center">
+                    <p class="text-muted fw-bold mb-2"><i class="bi bi-people-fill"></i> 현재 출석 인원</p>
+                    <div class="d-flex align-items-baseline">
+                        <h1 class="display-4 fw-bold text-primary mb-0" th:text="${members.size()}">0</h1>
+                        <span class="fs-4 ms-2 text-muted">명</span>
                     </div>
-                    <div th:if="${membersCount == 0}" class="py-4 text-center w-100 text-muted">
-                        등록된 인원이 없습니다. 관리자 페이지에서 인원을 추가해 주세요.
-                    </div>
+                    <hr class="my-3">
+<!--                    <div class="d-flex justify-content-between text-muted small fw-bold">-->
+<!--                        <span>리더 가능: <span class="text-success" th:text="${#lists.size(members.?[!isHard])}">0</span>명</span>-->
+<!--                        <span>리더 불가: <span class="text-warning" th:text="${#lists.size(members.?[isHard])}">0</span>명</span>-->
+<!--                    </div>-->
                 </div>
             </div>
         </div>
 
-        <div class="col-lg-4">
-            <h5 class="fw-bold text-dark mb-3"><i class="bi bi-gear-fill me-2"></i>관리 메뉴</h5>
-            <div class="d-grid gap-3">
-                <form th:action="@{/assign}" method="post">
-                    <button type="submit" class="btn btn-primary btn-xl w-100 fw-bold shadow"
-                            onclick="return confirm('랜덤 배정을 실행하시겠습니까?')">
-                        <i class="bi bi-shuffle me-2"></i>랜덤 목장 생성
-                    </button>
-                </form>
-                <div class="row g-2">
-                    <div class="col-6">
-                        <a th:href="@{/member/list/admin}" class="btn btn-outline-secondary py-3 w-100 fw-bold">
-                            <i class="bi bi-person-gear"></i> 명단 관리
-                        </a>
-                    </div>
-                    <div class="col-6">
-                        <form th:action="@{/member/clear}" method="post" onsubmit="return confirm('전체 명단을 삭제하시겠습니까?')">
-                            <button type="submit" class="btn btn-outline-danger py-3 w-100 fw-bold">
-                                <i class="bi bi-trash"></i> 전체 삭제
-                            </button>
-                        </form>
+        <div class="col-md-7">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body p-4">
+                    <form th:action="@{/assign}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-muted small">
+                                <i class="bi bi-gear-fill"></i> 목장 개수 설정
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white"><i class="bi bi-collection"></i></span>
+                                <select name="teamCount" class="form-select fw-bold text-primary">
+                                    <option value="2">2개 (D, A)</option>
+                                    <option value="4">4개 (D, A, N, I)</option>
+                                    <option value="6" selected>6개 (D, A, N, I, E, L) - 기본</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 fw-bold shadow-sm mb-3 py-2"
+                                onclick="return confirm('랜덤 배정을 실행하시겠습니까?')">
+                            <i class="bi bi-shuffle me-2"></i>랜덤 목장 생성 및 배정
+                        </button>
+                    </form>
+
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <a th:href="@{/member/list/admin}" class="btn btn-outline-secondary py-2 w-100 fw-bold small">
+                                <i class="bi bi-person-gear"></i> 명단 관리
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <form th:action="@{/member/unassign}" method="post" onsubmit="return confirm('목장 배정 결과를 초기화하시겠습니까?')">
+                                <button type="submit" class="btn btn-outline-danger py-2 w-100 fw-bold small">
+                                    <i class="bi bi-trash"></i> 목장 배정 초기화
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>

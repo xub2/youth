@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -23,13 +24,19 @@ public class GroupAssignmentController {
     private final MemberService memberService;
 
     /**
-     * 랜덤 목장 배정 실행
+     * 랜덤 목장 생성 및 배정 실행
      */
     @PostMapping("/assign")
-    public String assignGroups(RedirectAttributes redirectAttributes) {
+    public String assignGroups(@RequestParam(defaultValue = "6") int teamCount,
+                               RedirectAttributes redirectAttributes) {
         try {
+            // 1. 선택된 개수만큼 팀을 먼저 생성 (기존 팀 삭제 포함)
+            teamService.createTeams(teamCount);
+
+            // 2. 생성된 팀을 바탕으로 랜덤 배정 실행
             groupAssignmentService.assignGroups();
-            redirectAttributes.addFlashAttribute("message", "정상적으로 목장이 편성 되었습니다.");
+
+            redirectAttributes.addFlashAttribute("message", teamCount + "개 목장으로 편성이 완료되었습니다.");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "배정 중 오류가 발생했습니다: " + e.getMessage());
         }
@@ -38,12 +45,13 @@ public class GroupAssignmentController {
 
     @GetMapping("/assign/result")
     public String getAssignmentResult(Model model) {
+        // 배정된 결과를 보여주기 위해 최신 데이터 로드
         List<Team> teams = teamService.findAll();
-        List<Member> members = memberService.findAll(); // 전체 명단 다시 가져오기
+        List<Member> members = memberService.findAll();
 
         model.addAttribute("teams", teams);
-        model.addAttribute("members", members); // 뷰에 명단 전달
-        model.addAttribute("membersCount", members.size()); // 인원수 전달
+        model.addAttribute("members", members);
+        model.addAttribute("membersCount", members.size());
         return "index";
     }
 }

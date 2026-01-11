@@ -11,22 +11,24 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 @Builder
+@Table(name = "team")
 public class Team {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
+//    @Enumerated(EnumType.STRING)
     @Column(unique = true)
-    private TeamName teamName;
+    private String teamName;
 
     @Builder.Default
     @OneToMany(mappedBy = "team", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Member> members = new ArrayList<>();
 
-    public Team(TeamName teamName) {
+    public Team(String teamName) {
         this.teamName = teamName;
+        this.members = new ArrayList<>(); // 이 부분이 누락되면 null 에러 발생
     }
 
     public void addMember(Member member) {
