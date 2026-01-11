@@ -44,5 +44,9 @@ public class MemberService {
         memberRepository.deleteAll();
     }
 
+    public List<Member> findAllByNameAsc() {
+        return memberRepository.findAllByOrderByNameAsc();
+    }
+
 
 }
