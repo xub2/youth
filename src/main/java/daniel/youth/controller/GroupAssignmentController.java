@@ -52,6 +52,6 @@ public class GroupAssignmentController {
         model.addAttribute("teams", teams);
         model.addAttribute("members", members);
         model.addAttribute("membersCount", members.size());
-        return "index";
+        return "assignment-view";
     }
 }

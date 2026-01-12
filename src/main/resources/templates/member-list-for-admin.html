@@ -88,7 +88,7 @@
                 <thead class="table-dark">
                 <tr>
                     <th class="ps-4">번호</th> <th>이름</th>
-                    <th>리더 가능 여부</th>
+                    <th>리더 불가 여부</th>
                     <th class="text-center">삭제</th>
                 </tr>
                 </thead>
@@ -101,7 +101,7 @@
                     </td>
                     <td>
                         <span th:if="${member.isHard}" class="badge is-hard-badge p-2">리더 불가</span>
-                        <span th:unless="${member.isHard}" class="badge bg-success p-2">리더 가능</span>
+<!--                        <span th:unless="${member.isHard}" class="badge bg-success p-2">리더 가능</span>-->
                     </td>
                     <td class="text-center">
                         <form th:action="@{/member/admin/delete/{id}(id=${member.id})}" method="post"
