@@ -26,7 +26,8 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable()) // 빠른 개발을 위해 CSRF 비활성화
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/","/ui/**", "/css/**", "/js/**","/images/**","/static/**","/favicon.ico","/bulletin/latest").permitAll() // 정적 리소스 허용
+                        .requestMatchers("/", "/login", "/bulletin/latest","/error").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/images/**", "/static/**", "/favicon.ico").permitAll() // 정적 리소스 허용
                         .anyRequest().authenticated() // 나머지는 로그인 필요
                 )
                 .formLogin(form -> form
