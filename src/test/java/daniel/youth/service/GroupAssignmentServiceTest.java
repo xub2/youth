@@ -38,7 +38,7 @@ class GroupAssignmentServiceTest {
     void setUp() {
         // 1. 6개의 고정 팀 생성 (D, A, N, I, E, L)
         mockTeams = List.of(TeamName.values()).stream()
-                .map(name -> Team.builder().teamName(name).members(new ArrayList<>()).build())
+                .map(name -> Team.builder().teamName(String.valueOf(name)).members(new ArrayList<>()).build())
                 .collect(Collectors.toList());
 
         // 2. 50명의 테스트 멤버 생성 (장애우 5명 포함)

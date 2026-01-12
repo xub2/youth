@@ -7,6 +7,7 @@ import daniel.youth.service.MemberService;
 import daniel.youth.service.TeamService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -25,10 +26,13 @@ public class MemberController {
     private final MemberService memberService;
     private final TeamService teamService;
 
+//    @Value("${kakao.map.api.key}")
+//    private String kakaoMapKey;
+
     /**
      * 메인 화면: 출석 명단 리스트 + 등록 폼
      */
-    @GetMapping("/")
+    @GetMapping("/member/assign")
     public String index(Model model) {
         List<Member> members = memberService.findAll();
         List<Team> teams = teamService.findAll(); // 배정 결과가 있다면 보여주기 위해 추가
@@ -36,7 +40,8 @@ public class MemberController {
         model.addAttribute("members", members);
         model.addAttribute("membersCount", members.size());
         model.addAttribute("teams", teams);
-        return "index";
+//        model.addAttribute("kakaoMapKey", kakaoMapKey);
+        return "assignment-view";
     }
 
     @GetMapping("/member/list/admin")
@@ -114,7 +119,7 @@ public class MemberController {
             redirectAttributes.addFlashAttribute("error", "초기화 중 오류가 발생했습니다.");
         }
 
-        return "redirect:/";
+        return "redirect:/member/assign";
     }
 
     // 다운로드 -> 따로 클래스를 빼보는걸로
