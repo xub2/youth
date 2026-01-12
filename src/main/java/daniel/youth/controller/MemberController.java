@@ -12,8 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -126,38 +125,39 @@ public class MemberController {
         String dateStr = java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd").format(LocalDateTime.now());
         String fileName = URLEncoder.encode(dateStr + "_출석명단.csv", StandardCharsets.UTF_8);
 
-//        List<Member> members = memberService.findAll();
-        List<Member> members = memberService.findAllByNameAsc();
-
-        // 2. 응답 설정 (UTF-8 명시)
         response.setContentType("text/csv; charset=UTF-8");
-        response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
 
+        // 2. BOM 쓰기 (OutputStream을 직접 사용)
+        // 이 작업은 반드시 Writer를 생성하기 전에 해야 안전합니다.
+        OutputStream os = response.getOutputStream();
+        os.write(0xEF);
+        os.write(0xBB);
+        os.write(0xBF);
 
-        // 3. 한글 깨짐 및 칸 밀림 방지를 위해 BufferedWriter와OutputStreamWriter 사용
-        // OutputStream에 BOM(\ufeff)을 먼저 쓰고 시작합니다.
-        response.getOutputStream().write(0xEF);
-        response.getOutputStream().write(0xBB);
-        response.getOutputStream().write(0xBF);
+        // 3. Writer 생성 (UTF-8 명시)
+        // BufferedWriter를 사용하면 대량 데이터 처리 시 성능이 더 좋습니다.
+        try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8))) {
 
-        PrintWriter writer = new PrintWriter(new java.io.OutputStreamWriter(response.getOutputStream(), StandardCharsets.UTF_8));
+            // 4. 헤더 작성
+            bw.write("번호,이름");
+            bw.newLine();
 
-        // 4. 헤더 작성
-        // (A열은 비우고 B열 1행에 '이름' 배치)
-        // CSV에서 빈 칸은 쉼표(,)로 구분합니다.
-        writer.println("번호, 이름");
+            // 5. 데이터 작성
+            List<Member> members = memberService.findAllByNameAsc();
+            int index = 1;
+            for (Member m : members) {
+                // 쉼표나 줄바꿈이 포함될 수 있는 데이터는 큰따옴표로 감싸는 것이 정석입니다.
+                String line = String.format("%d,\"%s\"", index++, m.getName());
+                bw.write(line);
+                bw.newLine();
+            }
 
-        // 5. 데이터 작성
-        int index = 1;
-        for (Member m : members) {
-            // 혹시 이름에 쉼표가 들어있을 경우를 대비해 큰따옴표로 감쌉니다.
-            writer.println(String.format("%d,%s", index++, m.getName()));
-        }
+            bw.newLine();
+            bw.write(String.format("총 인원,%d명", members.size()));
+            bw.newLine();
 
-        writer.println(); // 한 줄 띄우기
-        writer.println(String.format("총 인원,%d명", members.size()));
-
-        writer.flush();
-        writer.close();
+            bw.flush();
+        } // try-with-resources 사용 시 close() 자동 호출
     }
 }
