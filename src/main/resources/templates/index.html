@@ -4,14 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>다니엘 청년부 - 메인</title>
+    <title>다니엘 청년부</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="icon" th:href="@{/images/favicon.ico}" type="image/x-icon">
-<!--    <script type="text/javascript"-->
-<!--            th:src="'//dapi.kakao.com/v2/maps/sdk.js?appkey=' + ${kakaoMapKey}"></script>-->
+    <!--    <script type="text/javascript"-->
+    <!--            th:src="'//dapi.kakao.com/v2/maps/sdk.js?appkey=' + ${kakaoMapKey}"></script>-->
     <style>
-        body { background-color: #f8f9fa; }
+        body {
+            background-color: #f8f9fa;
+        }
+
         /* 메뉴 버튼 스타일 커스텀 */
         .btn-menu {
             height: 100px;
@@ -24,14 +27,17 @@
             border-radius: 15px;
             transition: all 0.2s;
         }
+
         .btn-menu:hover:not(:disabled) {
             transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
+
         .btn-menu i {
             font-size: 1.8rem;
             margin-bottom: 5px;
         }
+
         /* 메인 카드 이미지 영역 */
         .main-card {
             border-radius: 20px;
@@ -39,13 +45,15 @@
             border: none;
             min-height: 450px;
         }
+
         .welcome-text {
             position: absolute;
             bottom: 30px;
             left: 30px;
             color: white;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
+
         /* SNS 카드 스타일 */
         .sns-card {
             display: flex;
@@ -58,14 +66,15 @@
             border-radius: 20px;
             text-decoration: none;
             color: #333;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
             transition: all 0.2s;
             border: 1px solid #f0f0f0;
             height: 100%;
         }
+
         .sns-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
             color: #000;
         }
 
@@ -91,11 +100,35 @@
         }
 
         /* 서비스별 색상 */
-        .insta { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
-        .youtube { background-color: #FF0000; }
-        .kakao { background-color: #FEE500; color: #3C1E1E; } /* 카카오는 검정 아이콘 */
-        .home { background-color: #4A90E2; }
+        .insta {
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+        }
 
+        .youtube {
+            background-color: #FF0000;
+        }
+
+        .kakao {
+            background-color: #FEE500;
+            color: #3C1E1E;
+        }
+
+        /* 카카오는 검정 아이콘 */
+        .home {
+            background-color: #4A90E2;
+        }
+
+        /* 비활성화된 SNS 카드 스타일 */
+        .disabled-link {
+            cursor: not-allowed; /* 금지 모양 커서 */
+            opacity: 0.6;        /* 약간 흐릿하게 */
+            filter: grayscale(1); /* 흑백 처리 (선택사항) */
+            pointer-events: none; /* 마우스 클릭/호버 이벤트 완전 차단 */
+        }
+
+        .disabled-link .sns-label {
+            text-decoration: none;
+        }
 
     </style>
 </head>
@@ -109,7 +142,8 @@
     <div class="row g-4">
         <div class="col-lg-8">
             <div class="card main-card shadow-sm bg-dark text-white position-relative">
-                <img th:src="@{/images/daniel-photo.png}" class="card-img h-100 object-fit-cover opacity-75" alt="청년부 이미지"
+                <img th:src="@{/images/daniel-photo.png}" class="card-img h-100 object-fit-cover opacity-75"
+                     alt="청년부 이미지"
                      onerror="this.src='https://images.unsplash.com/photo-1529070538774-1843cb3265df?auto=format&fit=crop&q=80&w=1000'">
                 <div class="welcome-text">
                     <h2 class="fw-bold">Welcome!</h2>
@@ -120,7 +154,8 @@
 
         <div class="col-lg-4">
             <div class="d-flex flex-column gap-3 h-100">
-                <a th:href="@{/bulletin/latest}" target="_blank" class="btn btn-white btn-menu shadow-sm border bg-white">
+                <a th:href="@{/bulletin/latest}" target="_blank"
+                   class="btn btn-white btn-menu shadow-sm border bg-white">
                     <i class="bi bi-book-half text-primary"></i>
                     이번 주 주보 보기
                 </a>
@@ -128,22 +163,28 @@
                     <i class="bi bi-person-check text-success"></i>
                     출석 인원 관리
                 </a>
-
                 <a th:href="@{/assign/result}" class="btn btn-white btn-menu shadow-sm border bg-white">
                     <i class="bi bi-shuffle text-success"></i>
                     목장 랜덤 배정
                 </a>
-                <button sec:authorize="isAnonymous()" class="btn btn-light btn-menu border text-muted" disabled>
-                    <i class="bi bi-lock-fill"></i>
-                    관리자 메뉴 (주보 교체)
-                </button>
 
-                <div sec:authorize="isAuthenticated()" class="d-flex flex-column gap-2 p-3 border rounded-4 bg-white shadow-sm">
+                <div sec:authorize="isAnonymous()" class="d-grid mt-auto">
+                    <a th:href="@{/login}" class="btn btn-light btn-menu border text-muted shadow-sm">
+                        <i class="bi bi-lock-fill mb-1" style="font-size: 1.5rem;"></i>
+                        <span style="font-size: 0.9rem;">관리자 로그인</span>
+                    </a>
+                </div>
+
+                <div sec:authorize="isAuthenticated()"
+                     class="d-flex flex-column gap-2 p-3 border rounded-4 bg-white shadow-sm mt-auto">
                     <div class="d-flex justify-content-between align-items-center mb-1">
-                        <span class="small fw-bold text-secondary"><i class="bi bi-file-earmark-pdf me-1"></i>주보 업데이트 (PDF로 업로드)</span>
+                <span class="small fw-bold text-secondary">
+                    <i class="bi bi-file-earmark-pdf me-1"></i>주보 업데이트 (PDF 업로드)
+                </span>
 
                         <form th:action="@{/logout}" method="post" style="margin: 0;">
-                            <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3" style="font-size: 0.75rem;">
+                            <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3"
+                                    style="font-size: 0.75rem;">
                                 <i class="bi bi-box-arrow-right"></i> 로그아웃
                             </button>
                         </form>
@@ -181,32 +222,100 @@
                 <div class="col-6 col-md-3">
                     <a href="https://www.youtube.com/@comebackhome-dl6gt" target="_blank" class="sns-card">
                         <div class="sns-circle youtube"><i class="bi bi-youtube"></i></div>
-                        <span class="sns-label">유튜브</span>
+                        <span class="sns-label">미디어팀 유튜브</span>
                     </a>
                 </div>
                 <div class="col-6 col-md-3">
-                    <a href="https://www.dhch1.org/" target="_blank" class="sns-card">
-                        <div class="sns-circle home"><i class="bi bi-house-door-fill"></i></div>
-                        <span class="sns-label">대화교회 홈페이지</span>
-                    </a>
+                <a href="#" target="_blank" class="sns-card disabled-link" onclick="return false;">
+                    <div class="sns-circle" style="background-color: #adb5bd;"> <i class="bi bi-chat-right-heart-fill"></i>
+                    </div>
+                    <span class="sns-label text-muted">중보 기도 Coming Soon !</span>
+                </a>
+            </div>
+            </div>
+        </div>
+
+        <div class="col-12 mt-3">
+            <hr style="border: 0; height: 2px; background-color: #adb5bd; margin: 0; opacity: 0.5;">
+        </div>
+
+        <div class="col-12 mt-4">
+            <div class="card border-0 shadow-sm" style="border-radius: 20px;">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold mb-0 fs-4"><i class="bi bi-megaphone-fill text-warning me-2"></i>공지사항</h5>
+                        <button sec:authorize="isAuthenticated()" class="btn btn-sm btn-outline-dark rounded-pill"
+                                data-bs-toggle="collapse" data-bs-target="#noticeEditForm">
+                            내용 수정
+                        </button>
+                    </div>
+
+                    <div class="p-3 bg-light rounded-3 mb-2">
+                        <p class="mb-0 text-dark" style="white-space: pre-wrap;"
+                           th:text="${noticeContent ?: '등록된 공지사항이 없습니다.'}">
+                            여기에 공지사항 내용이 출력됩니다.
+                        </p>
+                    </div>
+
+                    <div sec:authorize="isAuthenticated()" class="collapse mt-3" id="noticeEditForm">
+                        <form th:action="@{/admin/notice/update}" method="post">
+                            <textarea name="content" class="form-control mb-2" rows="10"
+                                      th:text="${noticeContent}"></textarea>
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-dark btn-sm px-4 rounded-pill">저장하기</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
 
-<!--        <div class="col-12">-->
-<!--            <div class="card border-0 shadow-sm overflow-hidden" style="border-radius: 20px;">-->
-<!--                <div class="card-header bg-white py-3 border-0">-->
-<!--                    <h5 class="card-title fw-bold mb-0">-->
-<!--                        <i class="bi bi-geo-alt-fill text-danger me-2"></i>찾아오시는 길 : 수정중입니다-->
-<!--                    </h5>-->
-<!--                </div>-->
-<!--                <img th:src="@{/images/map.png}" class="img-fluid" alt="교회 위치"-->
-<!--                     style="width: 100%; height: 350px; object-fit: cover;">-->
-<!--                <div class="card-body bg-light py-2 px-3">-->
-<!--                    <p class="mb-0 text-secondary small text-center">대화교회: 경기 고양시 일산동구 노루목로 112</p>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
+        <div class="col-12 mt-5">
+            <div class="card border-0 shadow-sm" style="border-radius: 20px;">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="fw-bold mb-0 fs-4"><i class="bi bi-headphones me-2"></i>금주의 찬양 플레이리스트</h5>
+                        <button sec:authorize="isAuthenticated()" class="btn btn-sm btn-outline-dark rounded-pill"
+                                data-bs-toggle="collapse" data-bs-target="#playlistEditForm">목록 수정</button>
+                    </div>
+
+                    <div id="playlistPreview" class="text-center">
+                        <div th:each="item : ${playlistItems}" class="mb-5 playlist-display-item">
+                            <h6 class="fw-bold mb-3" th:text="${item.title}">찬양 제목</h6>
+                            <div class="ratio ratio-16x9 mx-auto rounded-4 overflow-hidden shadow-sm" style="max-width: 800px;">
+                                <iframe th:src="'https://www.youtube.com/embed/' + ${item.videoId}" allowfullscreen></iframe>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div sec:authorize="isAuthenticated()" class="collapse mt-3" id="playlistEditForm">
+                        <form th:action="@{/admin/playlist/update}" method="post" id="playlistForm" class="p-3 bg-light rounded-3">
+                            <div id="itemContainer">
+                                <div th:each="item : ${playlistItems}" class="playlist-edit-item mb-3 p-3 bg-white rounded shadow-sm">
+                                    <input type="text" name="titles" class="form-control mb-2" placeholder="찬양 제목" th:value="${item.title}" oninput="updatePreview()">
+
+                                    <input type="text" name="videoIds" class="form-control mb-2 youtube-url-input"
+                                           placeholder="유튜브 주소를 입력하세요"
+                                           th:value="${'https://www.youtube.com/watch?v=' + item.videoId}"
+                                           onchange="updatePreview()" oninput="updatePreview()">
+
+                                    <button type="button" class="btn btn-link btn-sm text-danger p-0" onclick="removeItem(this)">
+                                        <i class="bi bi-trash me-1"></i>삭제
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between mt-3">
+                                <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-3" onclick="addItem()">
+                                    <i class="bi bi-plus-lg me-1"></i>곡 추가
+                                </button>
+                                <button type="submit" class="btn btn-dark btn-sm px-4 rounded-pill">최종 저장</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -220,6 +329,81 @@
     /*]]>*/
 </script>
 
+<script>
+    // 유튜브 ID 추출 함수 (기존 로직 활용)
+    function getYouTubeId(url) {
+        if (url.length === 11) return url;
+        let videoId = "";
+        if (url.includes("v=")) videoId = url.split("v=")[1].split("&")[0];
+        else if (url.includes("youtu.be/")) videoId = url.split("youtu.be/")[1].split("?")[0];
+        return videoId;
+    }
+
+    // 2번 요구사항: 입력 즉시 미리보기 업데이트
+    // 실시간 미리보기 업데이트 (최적화 버전)
+    function updatePreview() {
+        const container = document.getElementById('itemContainer');
+        const preview = document.getElementById('playlistPreview');
+        const editItems = container.querySelectorAll('.playlist-edit-item');
+        const previewItems = preview.querySelectorAll('.playlist-display-item');
+
+        editItems.forEach((editItem, index) => {
+            const titleValue = editItem.querySelector('input[name="titles"]').value || '찬양 제목';
+            const urlValue = editItem.querySelector('input[name="videoIds"]').value;
+            const videoId = getYouTubeId(urlValue);
+
+            // 1. 해당 순서의 미리보기 영역이 이미 있는지 확인
+            let currentPreview = previewItems[index];
+
+            if (!currentPreview) {
+                // 없으면 새로 생성 (iframe 포함)
+                const newPreview = document.createElement('div');
+                newPreview.className = 'mb-5 playlist-display-item text-center';
+                newPreview.innerHTML = `
+                <h6 class="fw-bold mb-3">${titleValue}</h6>
+                <div class="ratio ratio-16x9 mx-auto rounded-4 overflow-hidden shadow-sm" style="max-width: 800px;">
+                    <iframe src="${videoId ? 'https://www.youtube.com/embed/' + videoId : ''}" allowfullscreen></iframe>
+                </div>`;
+                preview.appendChild(newPreview);
+            } else {
+                // 있으면 제목만 업데이트
+                const titleElement = currentPreview.querySelector('h6');
+                if (titleElement.innerText !== titleValue) {
+                    titleElement.innerText = titleValue;
+                }
+
+                // URL(videoId)이 바뀐 경우에만 iframe 업데이트 (깜빡임 방지 핵심)
+                const iframe = currentPreview.querySelector('iframe');
+                const newSrc = videoId ? 'https://www.youtube.com/embed/' + videoId : '';
+                if (iframe.getAttribute('src') !== newSrc) {
+                    iframe.setAttribute('src', newSrc);
+                }
+            }
+        });
+
+        // 삭제된 항목 반영 (편집창 개수보다 미리보기 개수가 많으면 제거)
+        if (previewItems.length > editItems.length) {
+            for (let i = editItems.length; i < previewItems.length; i++) {
+                previewItems[i].remove();
+            }
+        }
+    }
+
+    // addItem 함수도 이벤트 바인딩 수정
+    function addItem() {
+        const container = document.getElementById('itemContainer');
+        const newItem = document.createElement('div');
+        newItem.className = 'playlist-edit-item mb-3 p-3 bg-white rounded shadow-sm';
+        newItem.innerHTML = `
+        <input type="text" name="titles" class="form-control mb-2" placeholder="찬양 제목" oninput="updatePreview()">
+        <input type="text" name="videoIds" class="form-control mb-2" placeholder="유튜브 주소" oninput="updatePreview()">
+        <button type="button" class="btn btn-link btn-sm text-danger p-0" onclick="removeItem(this)">
+            <i class="bi bi-trash me-1"></i>삭제
+        </button>`;
+        container.appendChild(newItem);
+        updatePreview();
+    }
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
