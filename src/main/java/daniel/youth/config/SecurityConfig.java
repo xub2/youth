@@ -8,6 +8,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -20,6 +22,12 @@ public class SecurityConfig {
 
     @Value("${admin.password}") // 기본값 youth1234, 외부 설정 우선
     private String adminPassword;
+
+    // 1. PasswordEncoder를 빈으로 등록 (BCrypt 방식)
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -44,9 +52,9 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        UserDetails admin = User.withDefaultPasswordEncoder()
+        UserDetails admin = User.builder() // withDefaultPasswordEncoder() 대신 builder() 사용
                 .username(adminUsername)
-                .password(adminPassword)
+                .password(passwordEncoder().encode(adminPassword))
                 .roles("ADMIN")
                 .build();
         return new InMemoryUserDetailsManager(admin);
