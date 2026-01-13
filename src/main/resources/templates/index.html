@@ -49,10 +49,11 @@
         /* SNS 카드 스타일 */
         .sns-card {
             display: flex;
-            flex-direction: column;
+            /* 가로 배치를 위해 row로 변경 */
+            flex-direction: row;
             align-items: center;
             justify-content: center;
-            padding: 20px 10px;
+            padding: 15px 10px; /* 세로 패딩을 줄임 */
             background: white;
             border-radius: 20px;
             text-decoration: none;
@@ -70,15 +71,23 @@
 
         /* 동그라미 아이콘 공통 */
         .sns-circle {
-            width: 55px;
-            height: 55px;
+            width: 45px; /* 크기를 약간 줄임 */
+            height: 45px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.6rem;
-            margin-bottom: 12px;
+            font-size: 1.3rem;
+            margin-bottom: 0; /* 아래 여백 제거 */
+            margin-right: 12px; /* 오른쪽 여백 추가 */
             color: white;
+            flex-shrink: 0;
+        }
+
+        .sns-label {
+            font-weight: 600;
+            font-size: 0.85rem; /* 글자 크기 살짝 조정 */
+            line-height: 1.2;
         }
 
         /* 서비스별 색상 */
@@ -87,10 +96,7 @@
         .kakao { background-color: #FEE500; color: #3C1E1E; } /* 카카오는 검정 아이콘 */
         .home { background-color: #4A90E2; }
 
-        .sns-label {
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
+
     </style>
 </head>
 <body>
@@ -129,11 +135,20 @@
                 </a>
                 <button sec:authorize="isAnonymous()" class="btn btn-light btn-menu border text-muted" disabled>
                     <i class="bi bi-lock-fill"></i>
-                    주보 관리 (로그인 필요)
+                    관리자 메뉴 (주보 교체)
                 </button>
 
-                <div sec:authorize="isAuthenticated()" class="d-flex flex-column gap-2 p-2 border rounded-3 bg-light shadow-sm">
-                    <span class="small fw-bold text-center mb-1"><i class="bi bi-file-earmark-pdf"></i> 주보 교체</span>
+                <div sec:authorize="isAuthenticated()" class="d-flex flex-column gap-2 p-3 border rounded-4 bg-white shadow-sm">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="small fw-bold text-secondary"><i class="bi bi-file-earmark-pdf me-1"></i>주보 업데이트 (PDF로 업로드)</span>
+
+                        <form th:action="@{/logout}" method="post" style="margin: 0;">
+                            <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3" style="font-size: 0.75rem;">
+                                <i class="bi bi-box-arrow-right"></i> 로그아웃
+                            </button>
+                        </form>
+                    </div>
+
                     <form th:action="@{/admin/bulletin/upload}" method="post" enctype="multipart/form-data">
                         <div class="input-group input-group-sm">
                             <input type="file" name="file" class="form-control" accept="application/pdf">
@@ -148,43 +163,28 @@
 
 <div class="container mb-5">
     <div class="row g-4">
-        <div class="col-lg-7">
-            <div class="card border-0 shadow-sm overflow-hidden" style="border-radius: 20px;">
-                <div class="card-header bg-white py-3 border-0">
-                    <h5 class="card-title fw-bold mb-0">
-                        <i class="bi bi-geo-alt-fill text-danger me-2"></i>찾아오시는 길 : 수정중
-                    </h5>
-                </div>
-                <img th:src="@{/images/map.png}" class="img-fluid" alt="교회 위치"
-                     style="width: 100%; height: 320px; object-fit: cover;">
-                <div class="card-body bg-light py-2 px-3">
-                    <p class="mb-0 text-secondary small text-center">대화교회: 경기 고양시 일산동구 노루목로 112</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-5">
+        <div class="col-12">
             <div class="fw-bold mb-3 ps-1"><i class="bi bi-link-45deg me-1"></i>SNS 소식</div>
             <div class="row g-3">
-                <div class="col-6">
+                <div class="col-6 col-md-3">
                     <a href="https://www.instagram.com/daniel.__.youth/" target="_blank" class="sns-card">
                         <div class="sns-circle insta"><i class="bi bi-instagram"></i></div>
                         <span class="sns-label">청년부 인스타그램</span>
                     </a>
                 </div>
-                <div class="col-6">
+                <div class="col-6 col-md-3">
                     <a href="https://www.instagram.com/comong_daong/" target="_blank" class="sns-card">
                         <div class="sns-circle insta"><i class="bi bi-instagram"></i></div>
                         <span class="sns-label">미디어팀 인스타그램</span>
                     </a>
                 </div>
-                <div class="col-6">
+                <div class="col-6 col-md-3">
                     <a href="https://www.youtube.com/@comebackhome-dl6gt" target="_blank" class="sns-card">
                         <div class="sns-circle youtube"><i class="bi bi-youtube"></i></div>
                         <span class="sns-label">유튜브</span>
                     </a>
                 </div>
-                <div class="col-6">
+                <div class="col-6 col-md-3">
                     <a href="https://www.dhch1.org/" target="_blank" class="sns-card">
                         <div class="sns-circle home"><i class="bi bi-house-door-fill"></i></div>
                         <span class="sns-label">대화교회 홈페이지</span>
@@ -192,6 +192,21 @@
                 </div>
             </div>
         </div>
+
+<!--        <div class="col-12">-->
+<!--            <div class="card border-0 shadow-sm overflow-hidden" style="border-radius: 20px;">-->
+<!--                <div class="card-header bg-white py-3 border-0">-->
+<!--                    <h5 class="card-title fw-bold mb-0">-->
+<!--                        <i class="bi bi-geo-alt-fill text-danger me-2"></i>찾아오시는 길 : 수정중입니다-->
+<!--                    </h5>-->
+<!--                </div>-->
+<!--                <img th:src="@{/images/map.png}" class="img-fluid" alt="교회 위치"-->
+<!--                     style="width: 100%; height: 350px; object-fit: cover;">-->
+<!--                <div class="card-body bg-light py-2 px-3">-->
+<!--                    <p class="mb-0 text-secondary small text-center">대화교회: 경기 고양시 일산동구 노루목로 112</p>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
     </div>
 </div>
 
