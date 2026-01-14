@@ -18,8 +18,17 @@ public class PlaylistService {
     private final PlaylistRepository playlistRepository;
 
     public Playlist getLatestPlaylist() {
-        return playlistRepository.findTopByOrderByUploadDateDesc();
+//        return playlistRepository.findTopByOrderByUploadDateDesc();
 //        return playlistRepository.findTopWithItemsOrderByUploadDateDesc();
+        // 1. 최신 Playlist의 기본 정보만 먼저 조회 (LIMIT 1 적용)
+        Playlist latest = playlistRepository.findTopByOrderByUploadDateDesc();
+
+        if (latest == null) return null;
+
+        // 2. 찾은 ID를 이용해 items까지 포함된 전체 정보를 다시 조회
+        // 이 과정에서 Batch Size나 EntityGraph가 작동하여 N+1을 방지합니다.
+        return playlistRepository.findWithItemsById(latest.getId());
+
     }
 
     @Transactional

@@ -11,6 +11,10 @@ public interface PlaylistRepository extends JpaRepository<Playlist, Long> {
     @Query("select p from Playlist p left join fetch p.items order by p.uploadDate desc limit 1")
     Playlist findTopWithItemsOrderByUploadDateDesc();
 
-    @EntityGraph(attributePaths = {"items"})
     Playlist findTopByOrderByUploadDateDesc();
+
+    // 2. ID로 상세 조회할 때만 연관된 items를 가져옴
+    @EntityGraph(attributePaths = {"items"})
+    @Query("select p from Playlist p where p.id = :id")
+    Playlist findWithItemsById(Long id);
 }
