@@ -18,8 +18,8 @@ public class PlaylistService {
     private final PlaylistRepository playlistRepository;
 
     public Playlist getLatestPlaylist() {
-//        return playlistRepository.findTopByOrderByUploadDateDesc();
-        return playlistRepository.findTopWithItemsOrderByUploadDateDesc();
+        return playlistRepository.findTopByOrderByUploadDateDesc();
+//        return playlistRepository.findTopWithItemsOrderByUploadDateDesc();
     }
 
     @Transactional
