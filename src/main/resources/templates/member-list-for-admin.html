@@ -102,58 +102,74 @@
 
     <div class="card shadow-sm border-0">
         <div class="card-body p-0">
-            <table class="table table-hover mb-0">
-                <thead class="table-dark">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-dark text-nowrap">
                 <tr>
-                    <th class="ps-4">번호</th> <th>이름</th>
-                    <th>리더 불가 여부</th>
-                    <th class="text-center">목장 편성 여부</th>
-                    <th class="text-center">목장 편성 제외</th>
-                    <th class="text-center">삭제</th>
+                    <th class="ps-4 d-none d-md-table-cell" style="width: 50px;">번호</th>
+
+                    <th style="min-width: 70px;">이름</th>
+
+                    <th class="text-center">리더/목장 여부</th>
+
+                    <th class="text-center">목장 편성 설정</th>
+
+                    <th class="text-center" style="width: 60px;">삭제</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="member, stat : ${members}">
-                    <td class="ps-4 text-muted">
-                        <span th:text="${stat.count}">1</span> </td>
-                    <td>
+                    <td class="ps-4 text-muted d-none d-md-table-cell">
+                        <span th:text="${stat.count}">1</span>
+                    </td>
+
+                    <td style="white-space: nowrap;">
                         <span th:text="${member.name}" class="fw-bold fs-5">이름</span>
                     </td>
-                    <td>
-                        <span th:if="${member.isHard}" class="badge is-hard-badge p-2">리더 불가</span>
-<!--                        <span th:unless="${member.isHard}" class="badge bg-success p-2">리더 가능</span>-->
+
+                    <td class="text-center">
+                        <div class="d-flex flex-column flex-md-row justify-content-center align-items-center gap-1">
+
+                            <span th:if="${member.isHard}" class="badge is-hard-badge p-2">
+                                리더 불가
+                            </span>
+
+                            <span th:if="${member.excluded}" class="badge is-excluded-badge p-2">
+                                편성 제외
+                            </span>
+
+                        </div>
                     </td>
 
-                    <td class="text-center align-middle">
-                        <span th:if="${member.excluded}" class="badge is-excluded-badge p-2">
-                            편성 제외
-                        </span>
-                    </td>
+                    <td class="text-center">
+                        <form th:action="@{/member/exclude/{id}(id=${member.id})}" method="post" style="margin: 0;">
 
-                    <td class="text-center align-middle">
-                        <form th:action="@{/member/exclude/{id}(id=${member.id})}" method="post" style="display: inline;">
                             <button th:if="${member.excluded}" type="submit"
-                                    class="btn btn-sm btn-outline-primary fw-bold">
-                                목장 편성 포함
+                                    class="btn btn-sm btn-outline-primary fw-bold text-nowrap py-1">
+                                <span class="d-inline d-md-none">포함</span>
+                                <span class="d-none d-md-inline">목잠 편성 포함</span>
                             </button>
+
                             <button th:unless="${member.excluded}" type="submit"
-                                    class="btn btn-sm btn-outline-secondary fw-bold">
-                                목장 편성 제외
+                                    class="btn btn-sm btn-outline-secondary fw-bold text-nowrap py-1">
+                                <span class="d-inline d-md-none">제외</span>
+                                <span class="d-none d-md-inline">목장 편성 제외</span>
                             </button>
                         </form>
                     </td>
 
                     <td class="text-center">
                         <form th:action="@{/member/admin/delete/{id}(id=${member.id})}" method="post"
-                              th:onsubmit="return confirm('정말 ' + [[${member.name}]] + '님을 삭제하시겠습니까?');">
-                            <button type="submit" class="btn btn-sm btn-outline-danger px-3 fw-bold">
-                                <i class="bi bi-trash3"></i> 삭제
+                              th:onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger px-2 fw-bold text-nowrap">
+                                <i class="bi bi-trash3 me-1"></i>
+                                <span>삭제</span>
                             </button>
                         </form>
                     </td>
                 </tr>
+
                 <tr th:if="${#lists.isEmpty(members)}">
-                    <td colspan="4" class="text-center py-5 text-muted">등록된 인원이 없습니다.</td>
+                    <td colspan="5" class="text-center py-5 text-muted">등록된 인원이 없습니다.</td>
                 </tr>
                 </tbody>
             </table>
