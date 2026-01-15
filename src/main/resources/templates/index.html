@@ -15,6 +15,11 @@
             background-color: #f8f9fa;
         }
 
+        hover-light:hover {
+            background-color: #f8f9fa !important;
+            border-color: #dee2e6 !important;
+        }
+
         /* 메뉴 버튼 스타일 커스텀 */
         .btn-menu {
             height: 100px;
@@ -136,7 +141,7 @@
 <div class="container py-4">
     <div class="text-center mb-5">
         <img th:src="@{/images/logo.png}" alt="청년부 로고"
-             style="width: 90%; max-width: 500px; height: auto; object-fit: contain;">
+             style="width: 90%; max-width: 400px; height: auto; object-fit: contain;">
     </div>
 
     <div class="row g-4">
@@ -159,19 +164,45 @@
                     <i class="bi bi-book-half text-primary"></i>
                     이번 주 주보 보기
                 </a>
-                <a th:href="@{/member/list/admin}" class="btn btn-white btn-menu shadow-sm border bg-white">
-                    <i class="bi bi-person-check text-success"></i>
-                    출석 인원 관리
-                </a>
-                <a th:href="@{/assign/result}" class="btn btn-white btn-menu shadow-sm border bg-white">
-                    <i class="bi bi-shuffle text-success"></i>
-                    목장 랜덤 배정
-                </a>
+                <div class="d-grid">
+                    <a sec:authorize="isAuthenticated()" th:href="@{/member/list/admin}"
+                       class="btn btn-white btn-menu shadow-sm border bg-white">
+                        <i class="bi bi-person-check text-success"></i>
+                        출석 인원 관리
+                    </a>
+                    <button sec:authorize="isAnonymous()" class="btn btn-white btn-menu shadow-sm border bg-white opacity-50" disabled>
+                        <i class="bi bi-person-check text-muted"></i>
+                        출석 인원 관리
+                        <span style="font-size: 0.7rem; color: #dc3545;" class="mt-1">로그인 필요</span>
+                    </button>
+                </div>
 
-                <div sec:authorize="isAnonymous()" class="d-grid mt-auto">
-                    <a th:href="@{/login}" class="btn btn-light btn-menu border text-muted shadow-sm">
-                        <i class="bi bi-lock-fill mb-1" style="font-size: 1.5rem;"></i>
-                        <span style="font-size: 0.9rem;">관리자 로그인</span>
+                <div class="d-grid mt-3">
+                    <a sec:authorize="isAuthenticated()" th:href="@{/assign/result}"
+                       class="btn btn-white btn-menu shadow-sm border bg-white">
+                        <i class="bi bi-shuffle text-success"></i>
+                        목장 랜덤 배정
+                    </a>
+                    <button sec:authorize="isAnonymous()" class="btn btn-white btn-menu shadow-sm border bg-white opacity-50" disabled>
+                        <i class="bi bi-shuffle text-muted"></i>
+                        목장 랜덤 배정
+                        <span style="font-size: 0.7rem; color: #dc3545;" class="mt-1">로그인 필요</span>
+                    </button>
+                </div>
+
+<!--                <div sec:authorize="isAnonymous()" class="d-grid mt-auto">-->
+<!--                    <a th:href="@{/login}" class="btn btn-light btn-menu border text-muted shadow-sm">-->
+<!--                        <i class="bi bi-lock-fill mb-1" style="font-size: 1.5rem;"></i>-->
+<!--                        <span style="font-size: 0.9rem;">관리자 로그인</span>-->
+<!--                    </a>-->
+<!--                </div>-->
+
+                <div sec:authorize="isAnonymous()" class="mt-auto pt-3">
+                    <a th:href="@{/login}" class="text-decoration-none">
+                        <div class="d-flex align-items-center justify-content-center py-2 px-3 bg-white border rounded-pill shadow-sm hover-light" style="transition: all 0.2s;">
+                            <i class="bi bi-shield-lock-fill text-secondary me-2" style="font-size: 0.9rem;"></i>
+                            <span class="fw-bold text-secondary" style="font-size: 0.8rem;">관리자 로그인</span>
+                        </div>
                     </a>
                 </div>
 
