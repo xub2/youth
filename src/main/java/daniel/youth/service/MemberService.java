@@ -69,4 +69,13 @@ public class MemberService {
     public boolean existsByName(String name) {
         return memberRepository.existsByName(name);
     }
+
+    @Transactional
+    public void toggleExclude(Long id) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 인원입니다."));
+
+        // 현재 상태의 반대값으로 설정 (true -> false, false -> true)
+        member.setExcluded(!member.isExcluded());
+    }
 }
