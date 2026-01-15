@@ -46,12 +46,12 @@ class GroupAssignmentServiceTest {
 
         // 일반 인원 45명
         IntStream.range(0, 45).forEach(i ->
-                mockMembers.add(Member.builder().name("일반" + i).isHard(false).role(MemberRole.NORMAL).build())
+                mockMembers.add(Member.builder().name("일반" + i).isHard(false).isExcluded(false).role(MemberRole.NORMAL).build())
         );
 
         // 장애우 인원 5명
         IntStream.range(0, 5).forEach(i ->
-                mockMembers.add(Member.builder().name("장애우" + i).isHard(true).role(MemberRole.NORMAL).build())
+                mockMembers.add(Member.builder().name("장애우" + i).isHard(true).isExcluded(false).role(MemberRole.NORMAL).build())
         );
     }
 

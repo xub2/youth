@@ -32,8 +32,22 @@ public class GroupAssignmentService {
             m.setMemberRole(MemberRole.NORMAL);
         });
 
-        List<Member> nonDisabled = allMembers.stream().filter(m -> !m.isHard()).collect(Collectors.toList());
-        List<Member> disabled = allMembers.stream().filter(Member::isHard).collect(Collectors.toList());
+        // [긴급 추가] 목장 편성 열외 인원 필터링
+        List<Member> activeMembers = allMembers.stream()
+                .filter(m -> !m.isExcluded()) // 열외가 아닌 사람만 선택
+                .collect(Collectors.toList());
+
+        // 이후 로직은 activeMembers를 기준으로 수행
+        List<Member> nonDisabled = activeMembers.stream()
+                .filter(m -> !m.isHard())
+                .collect(Collectors.toList());
+
+        List<Member> disabled = activeMembers.stream()
+                .filter(Member::isHard)
+                .collect(Collectors.toList());
+
+//        List<Member> nonDisabled = allMembers.stream().filter(m -> !m.isHard()).collect(Collectors.toList());
+//        List<Member> disabled = allMembers.stream().filter(Member::isHard).collect(Collectors.toList());
 
         Collections.shuffle(nonDisabled);
         Collections.shuffle(disabled);

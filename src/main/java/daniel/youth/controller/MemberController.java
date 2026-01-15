@@ -5,6 +5,7 @@ import daniel.youth.domain.MemberRole;
 import daniel.youth.domain.Team;
 import daniel.youth.service.MemberService;
 import daniel.youth.service.TeamService;
+import daniel.youth.utils.MemberCsvExporter;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +26,8 @@ public class MemberController {
 
     private final MemberService memberService;
     private final TeamService teamService;
+
+    private final MemberCsvExporter memberCsvExporter;
 
 //    @Value("${kakao.map.api.key}")
 //    private String kakaoMapKey;
@@ -67,6 +70,7 @@ public class MemberController {
                     .name(name)
                     .isHard(isHard)
                     .role(MemberRole.NORMAL)
+                    .isExcluded(false)
                     .build();
 
             memberService.save(member);
@@ -122,47 +126,36 @@ public class MemberController {
         return "redirect:/member/assign";
     }
 
-    // 다운로드 -> 따로 클래스를 빼보는걸로
+    /**
+     * 출석 인원 CSV 다운로드
+     */
     @GetMapping("member/export")
     public void exportToCSV(HttpServletResponse response) throws IOException {
 
-        // 1. 파일명 설정 (날짜 포맷 정렬)
+        // 1. 데이터 조회
+        List<Member> members = memberService.findAllByNameAsc();
+
+        // 2. 파일명 생성
         String dateStr = java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd").format(LocalDateTime.now());
         String fileName = URLEncoder.encode(dateStr + "_출석명단.csv", StandardCharsets.UTF_8);
 
+        // 3. HTTP 응답 헤더 설정
         response.setContentType("text/csv; charset=UTF-8");
         response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
 
-        // 2. BOM 쓰기 (OutputStream을 직접 사용)
-        // 이 작업은 반드시 Writer를 생성하기 전에 해야 안전합니다.
-        OutputStream os = response.getOutputStream();
-        os.write(0xEF);
-        os.write(0xBB);
-        os.write(0xBF);
+        // 4. CSV 생성 위임 (핵심 로직 분리)
+        memberCsvExporter.export(members, response.getOutputStream());
+    }
 
-        // 3. Writer 생성 (UTF-8 명시)
-        // BufferedWriter를 사용하면 대량 데이터 처리 시 성능이 더 좋습니다.
-        try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8))) {
+    @PostMapping("/member/exclude/{id}")
+    public String toggleExclude(@PathVariable Long id, RedirectAttributes redirectAttributes) {
 
-            // 4. 헤더 작성
-            bw.write("번호,이름");
-            bw.newLine();
-
-            // 5. 데이터 작성
-            List<Member> members = memberService.findAllByNameAsc();
-            int index = 1;
-            for (Member m : members) {
-                // 쉼표나 줄바꿈이 포함될 수 있는 데이터는 큰따옴표로 감싸는 것이 정석입니다.
-                String line = String.format("%d,\"%s\"", index++, m.getName());
-                bw.write(line);
-                bw.newLine();
-            }
-
-            bw.newLine();
-            bw.write(String.format("총 인원,%d명", members.size()));
-            bw.newLine();
-
-            bw.flush();
-        } // try-with-resources 사용 시 close() 자동 호출
+        try {
+            memberService.toggleExclude(id);
+            // redirectAttributes.addFlashAttribute("message", "상태가 변경되었습니다.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "변경 중 오류가 발생했습니다.");
+        }
+        return "redirect:/member/list/admin";
     }
 }
