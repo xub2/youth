@@ -18,7 +18,7 @@ public class TeamService {
     private final TeamRepository teamRepository;
     private final MemberRepository memberRepository;
 
-    // [수정된 부분] 단순 조회가 아니라, 우리가 원하는 순서대로 정렬해서 반환
+    // 이제부턴 findAll() 할 때 단순 조회가 아니라, 우리가 원하는 순서대로 정렬해서 반환
     public List<Team> findAll() {
         List<Team> teams = teamRepository.findAll();
 
