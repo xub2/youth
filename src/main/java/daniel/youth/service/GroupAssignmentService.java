@@ -23,7 +23,7 @@ public class GroupAssignmentService {
 
     public void assignGroups() {
         List<Member> allMembers = memberRepository.findAll();
-        List<Team> teams = teamRepository.findAll();
+        List<Team> teams = teamRepository.findAll(); // 여기서 팀을 만들어서 findAll
         int teamCount = teams.size();
 
         // 1. 초기화
