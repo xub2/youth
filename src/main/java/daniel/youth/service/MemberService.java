@@ -3,6 +3,7 @@ package daniel.youth.service;
 import daniel.youth.domain.Member;
 import daniel.youth.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,13 +23,14 @@ public class MemberService {
 
     @Transactional
     public void save(Member member) {
-        Optional<Member> existingMember = memberRepository.findByNameWithLock(member.getName());
-
-        if (existingMember.isPresent()) {
-            throw new IllegalStateException(member.getName() + " 은(는) 이미 존재하는 이름입니다. " + member.getName() + "A 와 같이 입력해주세요.");
+        try {
+            memberRepository.save(member);
+        } catch (DataIntegrityViolationException e) {
+            throw new IllegalStateException(
+                    member.getName() + " 은(는) 이미 존재하는 이름입니다. "
+                            + member.getName() + "A 와 같이 입력해주세요."
+            );
         }
-
-        memberRepository.save(member);
     }
 
     public Optional<Member> findById(Long id) {
