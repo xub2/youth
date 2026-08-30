@@ -8,223 +8,431 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="icon" th:href="@{/images/favicon.ico}" type="image/x-icon">
-    <!--    <script type="text/javascript"-->
-    <!--            th:src="'//dapi.kakao.com/v2/maps/sdk.js?appkey=' + ${kakaoMapKey}"></script>-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Gaegu:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
     <style>
+        :root {
+            --bg:       #F2EFE9;
+            --surface:  #FFFFFF;
+            --surface-2:#F8F6F2;
+            --ink:      #1A1A1A;
+            --ink-2:    #6B6B6B;
+            --ink-3:    #B5B2AD;
+            --coral:    #F5906A;
+            --coral-10: rgba(245,144,106,0.10);
+            --coral-20: rgba(245,144,106,0.20);
+            --border:   rgba(0,0,0,0.07);
+            --radius:   20px;
+            --radius-sm:12px;
+            --sh-sm: 0 2px 8px rgba(0,0,0,0.06);
+            --sh:    0 4px 24px rgba(0,0,0,0.08);
+            --sh-lg: 0 12px 48px rgba(0,0,0,0.12);
+        }
+        *, *::before, *::after { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
         body {
-            background-color: #f8f9fa;
+            margin: 0;
+            background: var(--bg);
+            color: var(--ink);
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.65;
+            -webkit-font-smoothing: antialiased;
         }
 
-        hover-light:hover {
-            background-color: #f8f9fa !important;
-            border-color: #dee2e6 !important;
+        /* ── layout ── */
+        .wrap { max-width: 920px; margin: 0 auto; padding: 0 20px; }
+
+        /* ── logo ── */
+        .logo-block { text-align: center; }
+        .logo-img   { width: 90px; height: auto; display: block; margin: 0 auto; }
+        .logo-display-wrap {
+            display: flex; align-items: baseline; justify-content: center;
+            gap: 10px; margin: 6px auto 0; line-height: 1;
+        }
+        .logo-random-text {
+            font-family: 'Caveat', cursive; font-weight: 700;
+            font-size: clamp(48px, 14vw, 72px);
+            color: var(--ink); letter-spacing: 2px;
+            display: inline-block; transform: rotate(-1.5deg);
+        }
+        .logo-flock-text {
+            font-family: 'Caveat', cursive; font-weight: 700;
+            font-size: clamp(48px, 14vw, 72px);
+            color: var(--coral); letter-spacing: 1px;
+            display: inline-block; transform: rotate(1.2deg);
         }
 
-        /* 메뉴 버튼 스타일 커스텀 */
-        .btn-menu {
-            height: 100px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1.1rem;
-            border-radius: 15px;
-            transition: all 0.2s;
+        /* ── section separator ── */
+        .section-sep { border: none; border-top: 1.5px solid var(--border); margin: 0; }
+
+        /* ── section head ── */
+        .section-head { margin-bottom: 28px; }
+        .eyebrow {
+            display: inline-block;
+            font-size: 0.68rem; font-weight: 800;
+            letter-spacing: 0.14em; text-transform: uppercase;
+            color: var(--coral);
+            background: var(--coral-10);
+            padding: 3px 10px; border-radius: 999px;
+            margin-bottom: 10px;
+        }
+        .section-head h2 {
+            font-family: 'Gaegu', cursive; font-weight: 700;
+            font-size: clamp(1.8rem, 5vw, 2.4rem);
+            margin: 0; line-height: 1.2; color: var(--ink);
         }
 
-        .btn-menu:hover:not(:disabled) {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn-menu i {
-            font-size: 1.8rem;
-            margin-bottom: 5px;
-        }
-
-        /* 메인 카드 이미지 영역 */
-        .main-card {
-            border-radius: 20px;
+        /* ── photo card ── */
+        .photo-card {
+            position: relative;
+            border-radius: var(--radius);
+            box-shadow: var(--sh-lg);
             overflow: hidden;
-            border: none;
-            min-height: 450px;
+            aspect-ratio: 4 / 3;
+            background: #111;
+        }
+        .photo-card img {
+            position: absolute; inset: 0;
+            width: 100%; height: 100%;
+            object-fit: cover; object-position: center top;
+            display: block;
+        }
+        .photo-card::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(to top,
+                rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.1) 50%, transparent 70%);
+            pointer-events: none;
+        }
+        .photo-caption {
+            position: absolute; bottom: 22px; left: 24px;
+            color: #fff; z-index: 1;
+        }
+        .photo-caption h2 {
+            font-family: 'Gaegu', cursive; font-weight: 700;
+            font-size: 2rem; margin: 0 0 4px; color: #fff;
+        }
+        .photo-caption p { margin: 0; font-size: 0.93rem; opacity: 0.88; }
+
+        /* ── menu buttons ── */
+        .menu-stack { display: flex; flex-direction: column; gap: 10px; height: 100%; }
+        .menu-btn {
+            display: flex; align-items: center; gap: 14px;
+            padding: 0 18px; height: 78px;
+            background: var(--surface);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--sh-sm);
+            border: 1.5px solid var(--border);
+            text-decoration: none; color: var(--ink);
+            cursor: pointer;
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
+            width: 100%; font-family: 'Pretendard', sans-serif;
+        }
+        .menu-btn:hover:not(.menu-btn--disabled) {
+            transform: translateY(-3px); box-shadow: var(--sh); color: var(--ink);
+        }
+        .menu-btn--disabled {
+            background: var(--surface-2); border-color: var(--border);
+            cursor: not-allowed; box-shadow: none;
+        }
+        .menu-btn__icon {
+            width: 42px; height: 42px; border-radius: 11px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.25rem; flex-shrink: 0;
+            background: var(--coral-10); color: var(--coral);
+        }
+        .menu-btn--disabled .menu-btn__icon { background: rgba(0,0,0,0.05); color: var(--ink-3); }
+        .menu-btn__body { flex: 1; min-width: 0; }
+        .menu-btn__label { display: block; font-weight: 700; font-size: 0.97rem; color: var(--ink); }
+        .menu-btn--disabled .menu-btn__label { color: var(--ink-3); }
+        .menu-btn__sub {
+            display: inline-flex; align-items: center; gap: 3px;
+            font-size: 0.68rem; font-weight: 600; color: var(--ink-3); margin-top: 3px;
+        }
+        .menu-btn__arrow { font-size: 0.9rem; color: var(--ink-3); flex-shrink: 0; }
+
+        /* ── admin panel ── */
+        .admin-panel {
+            background: var(--surface);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--sh-sm);
+            border: 1.5px solid var(--border);
+            padding: 16px 18px;
+        }
+        .admin-panel__top {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
+        }
+        .admin-panel__title {
+            font-size: 0.8rem; font-weight: 700; color: var(--ink-2);
+            display: flex; align-items: center; gap: 6px;
         }
 
-        .welcome-text {
-            position: absolute;
-            bottom: 30px;
-            left: 30px;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        /* ── auth pill ── */
+        .auth-pill {
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+            padding: 10px 20px; width: 100%;
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            border-radius: 999px; box-shadow: var(--sh-sm);
+            color: var(--ink-2); text-decoration: none;
+            font-size: 0.82rem; font-weight: 700;
+            transition: all 0.15s;
+        }
+        .auth-pill:hover { border-color: var(--coral); color: var(--coral); }
+
+        /* ── buttons ── */
+        .btn-primary {
+            display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+            padding: 10px 22px;
+            background: var(--coral); color: #fff;
+            border: none; border-radius: 999px;
+            box-shadow: 0 4px 16px rgba(245,144,106,0.30);
+            font-family: 'Pretendard', sans-serif; font-weight: 700; font-size: 0.92rem;
+            cursor: pointer; text-decoration: none;
+            transition: all 0.15s;
+        }
+        .btn-primary:hover { box-shadow: 0 6px 24px rgba(245,144,106,0.45); transform: translateY(-1px); color: #fff; }
+        .btn-ghost {
+            display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+            padding: 8px 18px;
+            background: transparent; color: var(--ink-2);
+            border: 1.5px solid var(--border); border-radius: 999px;
+            font-family: 'Pretendard', sans-serif; font-weight: 700; font-size: 0.88rem;
+            cursor: pointer; text-decoration: none; transition: all 0.15s;
+        }
+        .btn-ghost:hover { border-color: var(--ink); color: var(--ink); background: var(--surface); }
+        .btn-toggle {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 5px 13px;
+            background: var(--surface-2); color: var(--ink-2);
+            border: 1.5px solid var(--border); border-radius: 999px;
+            font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.15s;
+        }
+        .btn-toggle:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+        .btn-logout {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 5px 12px;
+            background: transparent;
+            border: 1.5px solid rgba(245,144,106,0.35); border-radius: 999px;
+            font-size: 0.75rem; font-weight: 700; color: var(--coral);
+            cursor: pointer; transition: all 0.15s;
+        }
+        .btn-logout:hover { background: var(--coral); color: #fff; border-color: var(--coral); }
+        .btn-danger-soft {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 7px 14px;
+            background: transparent; color: var(--coral);
+            border: 1.5px solid rgba(245,144,106,0.35); border-radius: 999px;
+            font-family: 'Pretendard', sans-serif; font-weight: 700; font-size: 0.82rem;
+            cursor: pointer; transition: all 0.15s;
+        }
+        .btn-danger-soft:hover { background: var(--coral); color: #fff; border-color: var(--coral); }
+
+        /* ── surface card ── */
+        .surf-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--sh-sm);
+            border: 1.5px solid var(--border);
+            overflow: hidden;
+        }
+        .surf-card__header {
+            padding: 18px 24px 14px;
+            border-bottom: 1.5px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .surf-card__title {
+            font-size: 0.97rem; font-weight: 700; color: var(--ink);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .surf-card__icon {
+            width: 32px; height: 32px; border-radius: 9px;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--coral-10); color: var(--coral); font-size: 0.95rem;
+        }
+        .surf-card__body { padding: 22px 24px; }
+
+        /* ── notice ── */
+        .notice-body {
+            background: var(--surface-2);
+            border-radius: var(--radius-sm);
+            border: 1.5px solid var(--border);
+            padding: 16px 20px;
+            font-size: 0.93rem; line-height: 2;
+            white-space: pre-wrap; color: var(--ink);
         }
 
-        /* SNS 카드 스타일 */
+        /* ── SNS ── */
         .sns-card {
-            display: flex;
-            /* 가로 배치를 위해 row로 변경 */
-            flex-direction: row;
-            align-items: center;
-            justify-content: center;
-            padding: 15px 10px; /* 세로 패딩을 줄임 */
-            background: white;
-            border-radius: 20px;
-            text-decoration: none;
-            color: #333;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-            transition: all 0.2s;
-            border: 1px solid #f0f0f0;
-            height: 100%;
+            display: flex; align-items: center; gap: 12px;
+            padding: 16px;
+            background: var(--surface);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--sh-sm);
+            border: 1.5px solid var(--border);
+            text-decoration: none; color: var(--ink); height: 100%;
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
+        }
+        .sns-card:hover:not(.sns-card--disabled) {
+            transform: translateY(-3px); box-shadow: var(--sh); color: var(--ink);
+        }
+        .sns-icon {
+            width: 44px; height: 44px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; color: #fff; flex-shrink: 0;
+        }
+        .sns-name  { font-size: 0.88rem; font-weight: 700; color: var(--ink); }
+        .sns-sub   { font-size: 0.7rem; color: var(--ink-3); margin-top: 1px; }
+        .insta  { background: linear-gradient(45deg,#f09433,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888); }
+        .youtube{ background: #FF0000; }
+        .sns-card--disabled { cursor: not-allowed; opacity: 0.4; pointer-events: none; }
+
+        /* ── iframe ── */
+        .iframe-wrap {
+            border-radius: var(--radius-sm); overflow: hidden;
+            box-shadow: var(--sh-sm); border: 1.5px solid var(--border);
+            max-width: 800px; margin: 0 auto;
         }
 
-        .sns-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-            color: #000;
+        /* ── playlist edit ── */
+        .playlist-edit-item {
+            background: var(--surface-2);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 14px 16px;
         }
 
-        /* 동그라미 아이콘 공통 */
-        .sns-circle {
-            width: 45px; /* 크기를 약간 줄임 */
-            height: 45px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3rem;
-            margin-bottom: 0; /* 아래 여백 제거 */
-            margin-right: 12px; /* 오른쪽 여백 추가 */
-            color: white;
-            flex-shrink: 0;
+        /* ── form overrides ── */
+        .form-control, .form-select {
+            border: 1.5px solid rgba(0,0,0,0.10) !important;
+            border-radius: var(--radius-sm) !important;
+            background: var(--surface) !important;
+            color: var(--ink) !important;
+            font-family: 'Pretendard', sans-serif;
+            padding: 10px 14px !important;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--coral) !important;
+            box-shadow: 0 0 0 3px rgba(245,144,106,0.15) !important;
+            outline: none !important;
+            background: var(--surface) !important;
+        }
+        .form-control-sm { font-size: 0.88rem !important; padding: 7px 12px !important; }
+
+        /* ── footer ── */
+        footer {
+            background: var(--surface);
+            border-top: 1.5px solid var(--border);
+            color: var(--ink-3); font-size: 0.78rem;
+            text-align: center; padding: 28px 24px 60px;
         }
 
-        .sns-label {
-            font-weight: 600;
-            font-size: 0.85rem; /* 글자 크기 살짝 조정 */
-            line-height: 1.2;
-        }
-
-        /* 서비스별 색상 */
-        .insta {
-            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-        }
-
-        .youtube {
-            background-color: #FF0000;
-        }
-
-        .kakao {
-            background-color: #FEE500;
-            color: #3C1E1E;
-        }
-
-        /* 카카오는 검정 아이콘 */
-        .home {
-            background-color: #4A90E2;
-        }
-
-        /* 비활성화된 SNS 카드 스타일 */
-        .disabled-link {
-            cursor: not-allowed; /* 금지 모양 커서 */
-            opacity: 0.6;        /* 약간 흐릿하게 */
-            filter: grayscale(1); /* 흑백 처리 (선택사항) */
-            pointer-events: none; /* 마우스 클릭/호버 이벤트 완전 차단 */
-        }
-
-        .disabled-link .sns-label {
-            text-decoration: none;
-        }
-
+        /* section spacing */
+        .py-sect { padding: 56px 0; }
+        .bg-light { background: var(--bg) !important; }
+        .bg-white  { background: var(--surface) !important; }
     </style>
 </head>
 <body>
-<div class="container py-4">
-    <div class="text-center mb-5">
-        <img th:src="@{/images/logo.png}" alt="청년부 로고"
-             style="width: 90%; max-width: 400px; height: auto; object-fit: contain;">
-    </div>
 
-    <div class="row g-4">
-        <div class="col-lg-8">
-            <div class="card main-card shadow-sm bg-dark text-white position-relative">
-                <img th:src="@{/images/daniel-photo.png}" class="card-img h-100 object-fit-cover opacity-75"
-                     alt="청년부 이미지"
-                     onerror="this.src='https://images.unsplash.com/photo-1529070538774-1843cb3265df?auto=format&fit=crop&q=80&w=1000'">
-                <div class="welcome-text">
-                    <h2 class="fw-bold">Welcome!</h2>
-                    <p class="fs-5 mb-0">함께 세워가는 즐거운 공동체, 대화교회 다니엘 청년부입니다.</p>
+<!-- LOGO -->
+<div class="wrap text-center" style="padding-top: 36px; padding-bottom: 8px;">
+    <div class="logo-block">
+        <img th:src="@{/images/logo.png}" alt="청년부 로고" class="logo-img">
+        <div class="logo-display-wrap">
+            <span class="logo-random-text">RANDOM</span>
+            <span class="logo-flock-text">GROUPING</span>
+        </div>
+    </div>
+</div>
+
+<!-- HERO -->
+<div class="wrap py-sect" style="padding-top: 28px;">
+    <div class="row g-4 align-items-stretch">
+        <div class="col-lg-7">
+            <div class="photo-card">
+                <img th:src="@{/images/daniel-photo.jpg}" alt="청년부 이미지">
+                <div class="photo-caption">
+                    <h2>Welcome!</h2>
+                    <p>함께 세워가는 즐거운 공동체, 대화교회 다니엘 청년부입니다.</p>
                 </div>
             </div>
         </div>
+        <div class="col-lg-5">
+            <div class="menu-stack">
 
-        <div class="col-lg-4">
-            <div class="d-flex flex-column gap-3 h-100">
-                <a th:href="@{/bulletin/latest}" target="_blank"
-                   class="btn btn-white btn-menu shadow-sm border bg-white">
-                    <i class="bi bi-book-half text-primary"></i>
-                    이번 주 주보 보기
+                <!-- 출석 인원 관리 (인증됨) -->
+                <a sec:authorize="isAuthenticated()" th:href="@{/member/list/admin}" class="menu-btn">
+                    <div class="menu-btn__icon"><i class="bi bi-person-check"></i></div>
+                    <div class="menu-btn__body">
+                        <span class="menu-btn__label">출석 인원 관리</span>
+                    </div>
+                    <i class="bi bi-chevron-right menu-btn__arrow"></i>
                 </a>
-                <div class="d-grid">
-                    <a sec:authorize="isAuthenticated()" th:href="@{/member/list/admin}"
-                       class="btn btn-white btn-menu shadow-sm border bg-white">
-                        <i class="bi bi-person-check text-success"></i>
-                        출석 인원 관리
-                    </a>
-                    <button sec:authorize="isAnonymous()" class="btn btn-white btn-menu shadow-sm border bg-white opacity-50" disabled>
-                        <i class="bi bi-person-check text-muted"></i>
-                        출석 인원 관리
-                        <span style="font-size: 0.7rem; color: #dc3545;" class="mt-1">로그인 필요</span>
-                    </button>
+                <!-- 출석 인원 관리 (미인증) -->
+                <div sec:authorize="isAnonymous()" class="menu-btn menu-btn--disabled">
+                    <div class="menu-btn__icon"><i class="bi bi-person-check"></i></div>
+                    <div class="menu-btn__body">
+                        <span class="menu-btn__label">출석 인원 관리</span>
+                        <span class="menu-btn__sub"><i class="bi bi-lock-fill"></i> 로그인 필요</span>
+                    </div>
                 </div>
 
-                <div class="d-grid mt-3">
-                    <a sec:authorize="isAuthenticated()" th:href="@{/assign/result}"
-                       class="btn btn-white btn-menu shadow-sm border bg-white">
-                        <i class="bi bi-shuffle text-success"></i>
-                        목장 랜덤 배정
-                    </a>
-                    <button sec:authorize="isAnonymous()" class="btn btn-white btn-menu shadow-sm border bg-white opacity-50" disabled>
-                        <i class="bi bi-shuffle text-muted"></i>
-                        목장 랜덤 배정
-                        <span style="font-size: 0.7rem; color: #dc3545;" class="mt-1">로그인 필요</span>
-                    </button>
+                <!-- 목장 랜덤 배정 (인증됨) -->
+                <a sec:authorize="isAuthenticated()" th:href="@{/assign/result}" class="menu-btn">
+                    <div class="menu-btn__icon"><i class="bi bi-shuffle"></i></div>
+                    <div class="menu-btn__body">
+                        <span class="menu-btn__label">목장 랜덤 배정</span>
+                    </div>
+                    <i class="bi bi-chevron-right menu-btn__arrow"></i>
+                </a>
+                <!-- 목장 랜덤 배정 (미인증) -->
+                <div sec:authorize="isAnonymous()" class="menu-btn menu-btn--disabled">
+                    <div class="menu-btn__icon"><i class="bi bi-shuffle"></i></div>
+                    <div class="menu-btn__body">
+                        <span class="menu-btn__label">목장 랜덤 배정</span>
+                        <span class="menu-btn__sub"><i class="bi bi-lock-fill"></i> 로그인 필요</span>
+                    </div>
                 </div>
 
-<!--                <div sec:authorize="isAnonymous()" class="d-grid mt-auto">-->
-<!--                    <a th:href="@{/login}" class="btn btn-light btn-menu border text-muted shadow-sm">-->
-<!--                        <i class="bi bi-lock-fill mb-1" style="font-size: 1.5rem;"></i>-->
-<!--                        <span style="font-size: 0.9rem;">관리자 로그인</span>-->
-<!--                    </a>-->
-<!--                </div>-->
+                <!-- 이번 주 주보 (비활성 고정) -->
+                <div class="menu-btn menu-btn--disabled">
+                    <div class="menu-btn__icon"><i class="bi bi-book-half"></i></div>
+                    <div class="menu-btn__body">
+                        <span class="menu-btn__label">이번 주 주보 보기</span>
+                        <span class="menu-btn__sub">준비 중</span>
+                    </div>
+                </div>
 
-                <div sec:authorize="isAnonymous()" class="mt-auto pt-3">
-                    <a th:href="@{/login}" class="text-decoration-none">
-                        <div class="d-flex align-items-center justify-content-center py-2 px-3 bg-white border rounded-pill shadow-sm hover-light" style="transition: all 0.2s;">
-                            <i class="bi bi-shield-lock-fill text-secondary me-2" style="font-size: 0.9rem;"></i>
-                            <span class="fw-bold text-secondary" style="font-size: 0.8rem;">관리자 로그인</span>
-                        </div>
+                <!-- 관리자 로그인 (미인증) -->
+                <div sec:authorize="isAnonymous()" class="mt-auto">
+                    <a th:href="@{/login}" class="auth-pill">
+                        <i class="bi bi-shield-lock-fill"></i> 관리자 로그인
                     </a>
                 </div>
 
-                <div sec:authorize="isAuthenticated()"
-                     class="d-flex flex-column gap-2 p-3 border rounded-4 bg-white shadow-sm mt-auto">
-                    <div class="d-flex justify-content-between align-items-center mb-1">
-                <span class="small fw-bold text-secondary">
-                    <i class="bi bi-file-earmark-pdf me-1"></i>주보 업데이트 (PDF 업로드)
-                </span>
-
-                        <form th:action="@{/logout}" method="post" style="margin: 0;">
-                            <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3"
-                                    style="font-size: 0.75rem;">
+                <!-- 관리자 패널 (인증됨) -->
+                <div sec:authorize="isAuthenticated()" class="admin-panel mt-auto">
+                    <div class="admin-panel__top">
+                        <span class="admin-panel__title">
+                            <i class="bi bi-file-earmark-pdf" style="color:var(--coral);"></i>
+                            주보 업데이트
+                        </span>
+                        <form th:action="@{/logout}" method="post" style="margin:0;">
+                            <button type="submit" class="btn-logout">
                                 <i class="bi bi-box-arrow-right"></i> 로그아웃
                             </button>
                         </form>
                     </div>
-
                     <form th:action="@{/admin/bulletin/upload}" method="post" enctype="multipart/form-data">
-                        <div class="input-group input-group-sm">
-                            <input type="file" name="file" class="form-control" accept="application/pdf">
-                            <button class="btn btn-dark" type="submit">업로드</button>
+                        <div class="d-flex gap-2">
+                            <input type="file" name="file" class="form-control form-control-sm"
+                                   accept="application/pdf" style="flex:1; min-width:0;">
+                            <button class="btn-primary" type="submit"
+                                    style="padding:7px 16px; font-size:0.82rem; white-space:nowrap; border-radius:10px;">
+                                올리기
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -233,143 +441,161 @@
     </div>
 </div>
 
-<div class="container mb-5">
-    <div class="row g-4">
-        <div class="col-12">
-            <div class="fw-bold mb-3 ps-1"><i class="bi bi-link-45deg me-1"></i>SNS 소식</div>
-            <div class="row g-3">
-                <div class="col-6 col-md-3">
-                    <a href="https://www.instagram.com/daniel.__.youth/" target="_blank" class="sns-card">
-                        <div class="sns-circle insta"><i class="bi bi-instagram"></i></div>
-                        <span class="sns-label">청년부 인스타그램</span>
-                    </a>
-                </div>
-                <div class="col-6 col-md-3">
-                    <a href="https://www.instagram.com/comong_daong/" target="_blank" class="sns-card">
-                        <div class="sns-circle insta"><i class="bi bi-instagram"></i></div>
-                        <span class="sns-label">미디어팀 인스타그램</span>
-                    </a>
-                </div>
-                <div class="col-6 col-md-3">
-                    <a href="https://www.youtube.com/@comebackhome-dl6gt" target="_blank" class="sns-card">
-                        <div class="sns-circle youtube"><i class="bi bi-youtube"></i></div>
-                        <span class="sns-label">미디어팀 유튜브</span>
-                    </a>
-                </div>
-                <div class="col-6 col-md-3">
-                <a href="#" target="_blank" class="sns-card disabled-link" onclick="return false;">
-                    <div class="sns-circle" style="background-color: #adb5bd;"> <i class="bi bi-chat-right-heart-fill"></i>
+<hr class="section-sep">
+
+<!-- SNS -->
+<div class="py-sect">
+    <div class="wrap">
+        <div class="section-head">
+            <span class="eyebrow">SNS 소식</span>
+            <h2>함께 소통해요</h2>
+        </div>
+        <div class="row g-3">
+            <div class="col-6 col-md-3">
+                <a href="https://www.instagram.com/daniel.__.youth/" target="_blank" class="sns-card">
+                    <div class="sns-icon insta"><i class="bi bi-instagram"></i></div>
+                    <div>
+                        <div class="sns-name">청년부 인스타그램</div>
+                        <div class="sns-sub">@daniel.__.youth</div>
                     </div>
-                    <span class="sns-label text-muted">중보 기도 Coming Soon !</span>
                 </a>
             </div>
+            <div class="col-6 col-md-3">
+                <a href="https://www.instagram.com/comong_daong/" target="_blank" class="sns-card">
+                    <div class="sns-icon insta"><i class="bi bi-instagram"></i></div>
+                    <div>
+                        <div class="sns-name">미디어팀 인스타그램</div>
+                        <div class="sns-sub">@comong_daong</div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-6 col-md-3">
+                <a href="https://www.youtube.com/@comebackhome-dl6gt" target="_blank" class="sns-card">
+                    <div class="sns-icon youtube"><i class="bi bi-youtube"></i></div>
+                    <div>
+                        <div class="sns-name">미디어팀 유튜브</div>
+                        <div class="sns-sub">comebackhome</div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-6 col-md-3">
+                <a href="#" class="sns-card sns-card--disabled" onclick="return false;">
+                    <div class="sns-icon" style="background:#D4D1CC;"><i class="bi bi-chat-right-heart-fill"></i></div>
+                    <div>
+                        <div class="sns-name">중보 기도</div>
+                        <div class="sns-sub">Coming Soon</div>
+                    </div>
+                </a>
             </div>
         </div>
+    </div>
+</div>
 
-        <div class="col-12 mt-3">
-            <hr style="border: 0; height: 2px; background-color: #adb5bd; margin: 0; opacity: 0.5;">
+<hr class="section-sep">
+
+<!-- NOTICE -->
+<div class="py-sect">
+    <div class="wrap">
+        <div class="section-head">
+            <span class="eyebrow">알림</span>
+            <h2>공지사항</h2>
         </div>
-
-        <div class="col-12 mt-4">
-            <div class="card border-0 shadow-sm" style="border-radius: 20px;">
-                <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="fw-bold mb-0 fs-4"><i class="bi bi-megaphone-fill text-warning me-2"></i>공지사항</h5>
-                        <button sec:authorize="isAuthenticated()" class="btn btn-sm btn-outline-dark rounded-pill"
-                                data-bs-toggle="collapse" data-bs-target="#noticeEditForm">
-                            내용 수정
-                        </button>
-                    </div>
-
-                    <div class="p-3 bg-light rounded-3 mb-2">
-                        <p class="mb-0 text-dark" style="white-space: pre-wrap;"
-                           th:text="${noticeContent ?: '등록된 공지사항이 없습니다.'}">
-                            여기에 공지사항 내용이 출력됩니다.
-                        </p>
-                    </div>
-
-                    <div sec:authorize="isAuthenticated()" class="collapse mt-3" id="noticeEditForm">
-                        <form th:action="@{/admin/notice/update}" method="post">
-                            <textarea name="content" class="form-control mb-2" rows="10"
-                                      th:text="${noticeContent}"></textarea>
-                            <div class="text-end">
-                                <button type="submit" class="btn btn-dark btn-sm px-4 rounded-pill">저장하기</button>
-                            </div>
-                        </form>
-                    </div>
+        <div class="surf-card">
+            <div class="surf-card__header">
+                <div class="surf-card__title">
+                    <div class="surf-card__icon"><i class="bi bi-megaphone-fill"></i></div>
+                    이번 주 공지
                 </div>
+                <button sec:authorize="isAuthenticated()"
+                        class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#noticeEditForm">
+                    내용 수정
+                </button>
             </div>
-        </div>
-
-        <div class="col-12 mt-5">
-            <div class="card border-0 shadow-sm" style="border-radius: 20px;">
-                <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h5 class="fw-bold mb-0 fs-4"><i class="bi bi-headphones me-2"></i>금주의 찬양 플레이리스트</h5>
-                        <button sec:authorize="isAuthenticated()" class="btn btn-sm btn-outline-dark rounded-pill"
-                                data-bs-toggle="collapse" data-bs-target="#playlistEditForm">목록 수정</button>
-                    </div>
-
-                    <div id="playlistPreview" class="text-center">
-                        <div th:each="item : ${playlistItems}" class="mb-5 playlist-display-item">
-                            <h6 class="fw-bold mb-3" th:text="${item.title}">찬양 제목</h6>
-                            <div class="ratio ratio-16x9 mx-auto rounded-4 overflow-hidden shadow-sm" style="max-width: 800px;">
-                                <iframe th:src="'https://www.youtube.com/embed/' + ${item.videoId}" allowfullscreen></iframe>
-                            </div>
+            <div class="surf-card__body">
+                <div class="notice-body" th:text="${noticeContent ?: '등록된 공지사항이 없습니다.'}"></div>
+                <div sec:authorize="isAuthenticated()" class="collapse mt-3" id="noticeEditForm">
+                    <form th:action="@{/admin/notice/update}" method="post">
+                        <textarea name="content" class="form-control mb-3" rows="10"
+                                  th:text="${noticeContent}"></textarea>
+                        <div class="text-end">
+                            <button type="submit" class="btn-primary">저장하기</button>
                         </div>
-                    </div>
-
-                    <div sec:authorize="isAuthenticated()" class="collapse mt-3" id="playlistEditForm">
-                        <form th:action="@{/admin/playlist/update}" method="post" id="playlistForm" class="p-3 bg-light rounded-3">
-                            <div id="itemContainer">
-                                <div th:each="item : ${playlistItems}" class="playlist-edit-item mb-3 p-3 bg-white rounded shadow-sm">
-                                    <input type="text" name="titles" class="form-control mb-2" placeholder="찬양 제목" th:value="${item.title}" oninput="updatePreview()">
-
-                                    <input type="text" name="videoIds" class="form-control mb-2 youtube-url-input"
-                                           placeholder="유튜브 주소를 입력하세요"
-                                           th:value="${'https://www.youtube.com/watch?v=' + item.videoId}"
-                                           onchange="updatePreview()" oninput="updatePreview()">
-
-                                    <button type="button" class="btn btn-link btn-sm text-danger p-0" onclick="removeItem(this)">
-                                        <i class="bi bi-trash me-1"></i>삭제
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="d-flex justify-content-between mt-3">
-                                <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-3" onclick="addItem()">
-                                    <i class="bi bi-plus-lg me-1"></i>곡 추가
-                                </button>
-                                <button type="submit" class="btn btn-dark btn-sm px-4 rounded-pill">최종 저장</button>
-                            </div>
-                        </form>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<footer class="py-5 mt-5" style="background-color: #f1f3f5; border-top: 1px solid #dee2e6;">
-    <div class="container text-center">
-        <div class="mb-3">
-            <img th:src="@{/images/logo.png}" alt="로고" style="height: 30px; opacity: 0.6; filter: grayscale(100%);">
+<hr class="section-sep">
+
+<!-- PLAYLIST -->
+<div class="py-sect">
+    <div class="wrap">
+        <div class="section-head">
+            <span class="eyebrow">찬양</span>
+            <h2>금주의 찬양 플레이리스트</h2>
         </div>
-        <p class="text-secondary mb-1" style="font-size: 0.85rem;">
-            © 2026 대화교회 다니엘 청년부. All rights reserved.
-        </p>
-        <p class="text-muted" style="font-size: 0.75rem;">
-            함께 세워가는 즐거운 공동체 | 경기도 고양시 일산동구 노루목로 112
-        </p>
-        <p class="text-muted" style="font-size: 0.75rem;">
-            developed by xuv2 | 뭔가 잘 안되면 저에게 연락주세요.
-        </p>
-        <div class="mt-3">
-            <small class="text-muted" style="font-size: 0.7rem; opacity: 0.5;">
-                All systems operational <i class="bi bi-check-circle-fill text-success"></i>
-            </small>
+        <div class="surf-card">
+            <div class="surf-card__header">
+                <div class="surf-card__title">
+                    <div class="surf-card__icon"><i class="bi bi-headphones"></i></div>
+                    이번 주 찬양
+                </div>
+                <button sec:authorize="isAuthenticated()"
+                        class="btn-toggle" data-bs-toggle="collapse" data-bs-target="#playlistEditForm">
+                    목록 수정
+                </button>
+            </div>
+            <div class="surf-card__body">
+                <div id="playlistPreview">
+                    <div th:each="item : ${playlistItems}" class="mb-5 playlist-display-item text-center">
+                        <p class="fw-bold mb-3" style="font-size:1rem;" th:text="${item.title}"></p>
+                        <div class="ratio ratio-16x9 iframe-wrap">
+                            <iframe th:src="'https://www.youtube.com/embed/' + ${item.videoId}" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                    <p th:if="${#lists.isEmpty(playlistItems)}"
+                       style="text-align:center; color:var(--ink-3); padding:24px 0;">
+                        이번 주 찬양을 준비 중이에요.
+                    </p>
+                </div>
+                <div sec:authorize="isAuthenticated()" class="collapse mt-4" id="playlistEditForm">
+                    <form th:action="@{/admin/playlist/update}" method="post" id="playlistForm"
+                          style="background:var(--surface-2); border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:16px;">
+                        <div id="itemContainer">
+                            <div th:each="item : ${playlistItems}" class="playlist-edit-item mb-3">
+                                <input type="text" name="titles" class="form-control mb-2"
+                                       placeholder="찬양 제목" th:value="${item.title}" oninput="updatePreview()">
+                                <input type="text" name="videoIds" class="form-control mb-2 youtube-url-input"
+                                       placeholder="유튜브 주소를 입력하세요"
+                                       th:value="${'https://www.youtube.com/watch?v=' + item.videoId}"
+                                       onchange="updatePreview()" oninput="updatePreview()">
+                                <button type="button" class="btn-danger-soft" onclick="removeItem(this)">
+                                    <i class="bi bi-trash"></i> 삭제
+                                </button>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between mt-3">
+                            <button type="button" class="btn-ghost" style="font-size:0.85rem;" onclick="addItem()">
+                                <i class="bi bi-plus-lg"></i> 곡 추가
+                            </button>
+                            <button type="submit" class="btn-primary" style="font-size:0.85rem;">최종 저장</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
+</div>
+
+<footer>
+    <div class="mb-2">
+        <img th:src="@{/images/logo.png}" alt="로고" style="height:22px; opacity:0.3; filter:grayscale(100%);">
+    </div>
+    <p style="margin:0 0 3px;">© 2026 대화교회 다니엘 청년부. All rights reserved.</p>
+    <p style="margin:0 0 3px;">함께 세워가는 즐거운 공동체 | 경기도 고양시 일산동구 노루목로 112</p>
+    <p style="margin:0;">developed by xuv2</p>
 </footer>
 
 <script th:inline="javascript">
@@ -380,92 +606,56 @@
     if (error) alert(error);
     /*]]>*/
 </script>
-
 <script>
-    // 유튜브 ID 추출 함수 (기존 로직 활용)
     function getYouTubeId(url) {
         if (url.length === 11) return url;
-        let videoId = "";
-        if (url.includes("v=")) videoId = url.split("v=")[1].split("&")[0];
-        else if (url.includes("youtu.be/")) videoId = url.split("youtu.be/")[1].split("?")[0];
-        return videoId;
+        let v = "";
+        if (url.includes("v="))           v = url.split("v=")[1].split("&")[0];
+        else if (url.includes("youtu.be/")) v = url.split("youtu.be/")[1].split("?")[0];
+        return v;
     }
-
-    // 2번 요구사항: 입력 즉시 미리보기 업데이트
-    // 실시간 미리보기 업데이트 (최적화 버전)
     function updatePreview() {
-        const container = document.getElementById('itemContainer');
-        const preview = document.getElementById('playlistPreview');
-        const editItems = container.querySelectorAll('.playlist-edit-item');
+        const container   = document.getElementById('itemContainer');
+        const preview     = document.getElementById('playlistPreview');
+        const editItems   = container.querySelectorAll('.playlist-edit-item');
         const previewItems = preview.querySelectorAll('.playlist-display-item');
-
-        editItems.forEach((editItem, index) => {
-            const titleValue = editItem.querySelector('input[name="titles"]').value || '찬양 제목';
-            const urlValue = editItem.querySelector('input[name="videoIds"]').value;
-            const videoId = getYouTubeId(urlValue);
-
-            // 1. 해당 순서의 미리보기 영역이 이미 있는지 확인
-            let currentPreview = previewItems[index];
-
-            if (!currentPreview) {
-                // 없으면 새로 생성 (iframe 포함)
-                const newPreview = document.createElement('div');
-                newPreview.className = 'mb-5 playlist-display-item text-center';
-                newPreview.innerHTML = `
-                <h6 class="fw-bold mb-3">${titleValue}</h6>
-                <div class="ratio ratio-16x9 mx-auto rounded-4 overflow-hidden shadow-sm" style="max-width: 800px;">
-                    <iframe src="${videoId ? 'https://www.youtube.com/embed/' + videoId : ''}" allowfullscreen></iframe>
-                </div>`;
-                preview.appendChild(newPreview);
+        editItems.forEach((item, i) => {
+            const title   = item.querySelector('input[name="titles"]').value || '찬양 제목';
+            const videoId = getYouTubeId(item.querySelector('input[name="videoIds"]').value);
+            let curr = previewItems[i];
+            if (!curr) {
+                const el = document.createElement('div');
+                el.className = 'mb-5 playlist-display-item text-center';
+                el.innerHTML = `<p class="fw-bold mb-3" style="font-size:1rem;">${title}</p>
+                    <div class="ratio ratio-16x9 iframe-wrap">
+                        <iframe src="${videoId ? 'https://www.youtube.com/embed/'+videoId : ''}" allowfullscreen></iframe>
+                    </div>`;
+                preview.appendChild(el);
             } else {
-                // 있으면 제목만 업데이트
-                const titleElement = currentPreview.querySelector('h6');
-                if (titleElement.innerText !== titleValue) {
-                    titleElement.innerText = titleValue;
-                }
-
-                // URL(videoId)이 바뀐 경우에만 iframe 업데이트 (깜빡임 방지 핵심)
-                const iframe = currentPreview.querySelector('iframe');
-                const newSrc = videoId ? 'https://www.youtube.com/embed/' + videoId : '';
-                if (iframe.getAttribute('src') !== newSrc) {
-                    iframe.setAttribute('src', newSrc);
-                }
+                const p = curr.querySelector('p');
+                if (p && p.innerText !== title) p.innerText = title;
+                const iframe = curr.querySelector('iframe');
+                const newSrc = videoId ? 'https://www.youtube.com/embed/'+videoId : '';
+                if (iframe && iframe.getAttribute('src') !== newSrc) iframe.setAttribute('src', newSrc);
             }
         });
-
-        // 삭제된 항목 반영 (편집창 개수보다 미리보기 개수가 많으면 제거)
-        if (previewItems.length > editItems.length) {
-            for (let i = editItems.length; i < previewItems.length; i++) {
-                previewItems[i].remove();
-            }
-        }
+        if (previewItems.length > editItems.length)
+            for (let i = editItems.length; i < previewItems.length; i++) previewItems[i].remove();
     }
-
-    // addItem 함수도 이벤트 바인딩 수정
     function addItem() {
-        const container = document.getElementById('itemContainer');
-        const newItem = document.createElement('div');
-        newItem.className = 'playlist-edit-item mb-3 p-3 bg-white rounded shadow-sm';
-        newItem.innerHTML = `
-        <input type="text" name="titles" class="form-control mb-2" placeholder="찬양 제목" oninput="updatePreview()">
-        <input type="text" name="videoIds" class="form-control mb-2" placeholder="유튜브 주소" oninput="updatePreview()">
-        <button type="button" class="btn btn-link btn-sm text-danger p-0" onclick="removeItem(this)">
-            <i class="bi bi-trash me-1"></i>삭제
-        </button>`;
-        container.appendChild(newItem);
+        const el = document.createElement('div');
+        el.className = 'playlist-edit-item mb-3';
+        el.innerHTML = `
+            <input type="text" name="titles" class="form-control mb-2" placeholder="찬양 제목" oninput="updatePreview()">
+            <input type="text" name="videoIds" class="form-control mb-2" placeholder="유튜브 주소" oninput="updatePreview()">
+            <button type="button" class="btn-danger-soft" onclick="removeItem(this)">
+                <i class="bi bi-trash"></i> 삭제
+            </button>`;
+        document.getElementById('itemContainer').appendChild(el);
         updatePreview();
     }
-
-    function removeItem(btn) {
-        // 버튼이 속한 부모 요소(.playlist-edit-item)를 찾아서 삭제
-        const itemToRemove = btn.closest('.playlist-edit-item');
-        itemToRemove.remove();
-
-        // 삭제 후 미리보기 갱신 (화면 동기화)
-        updatePreview();
-    }
+    function removeItem(btn) { btn.closest('.playlist-edit-item').remove(); updatePreview(); }
 </script>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

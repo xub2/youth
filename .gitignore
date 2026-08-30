@@ -40,3 +40,4 @@ out/
 ###개인적###
 *.db
 docker-compose.yml
+src/main/resources/application-local.yml

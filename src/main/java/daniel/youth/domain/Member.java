@@ -32,6 +32,7 @@ public class Member {
     @Column(columnDefinition = "boolean default false") // DDL 생성 시 기본값 힌트
     private boolean isExcluded = false;
 
+
     public void assignTeam(Team team) {
         this.team = team;
     }
@@ -42,6 +43,10 @@ public class Member {
 
     public void setExcluded(boolean excluded) {
         this.isExcluded = excluded;
+    }
+
+    public void setHard(boolean hard) {
+        this.isHard = hard;
     }
 
 }
