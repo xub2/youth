@@ -149,10 +149,18 @@ public class MemberController {
 
     @PostMapping("/member/exclude/{id}")
     public String toggleExclude(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-
         try {
             memberService.toggleExclude(id);
-            // redirectAttributes.addFlashAttribute("message", "상태가 변경되었습니다.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "변경 중 오류가 발생했습니다.");
+        }
+        return "redirect:/member/list/admin";
+    }
+
+    @PostMapping("/member/hard/{id}")
+    public String toggleHard(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            memberService.toggleHard(id);
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "변경 중 오류가 발생했습니다.");
         }
